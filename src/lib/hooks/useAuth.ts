@@ -23,6 +23,7 @@ export const useAuth = () => {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        console.log("user data: ", userData)
       } else {
         setUser(null);
       }

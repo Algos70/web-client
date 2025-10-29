@@ -1,60 +1,49 @@
+import { ReactElement } from 'react';
 import { useAuth } from "../lib/hooks/useAuth";
-import { api } from "../lib/utils/api";
-import { useEffect } from "react";
+import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
+import UserDashboard from "../components/auth/UserDashboard";
 
 export default function Dashboard() {
-  const { user, loading, logout, isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      window.location.href = "/";
-    }
-  }, [loading, isAuthenticated]);
-
-  const testProtectedEndpoint = async () => {
+  const callBackend = async () => {
     try {
-      const response = await api.get("/api/protected");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/protected`, {
+        credentials: "include",
+      });
+      
       if (response.ok) {
         const data = await response.json();
-        console.log("Protected data:", data);
-        alert(`Success: ${JSON.stringify(data)}`);
+        console.log("Success:", data);
+        alert(`API Response: ${JSON.stringify(data, null, 2)}`);
       } else {
-        console.error("Failed to fetch protected data");
-        alert("Failed to fetch protected data");
+        console.error("Request failed:", response.status);
+        alert(`Request failed with status: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error occurred");
+      console.error("Full error:", error);
+      alert(`Error: ${error}`);
     }
   };
 
-  if (loading) {
-    return <main>Loading...</main>;
-  }
-
-  if (!isAuthenticated) {
-    return <main>Redirecting...</main>;
-  }
-
   return (
-    <main style={{ padding: "20px" }}>
-      <h1>Dashboard</h1>
-      <div style={{ marginBottom: "20px" }}>
-        <h2>User Info</h2>
-        <p><strong>Name:</strong> {user?.name}</p>
-        <p><strong>Email:</strong> {user?.email}</p>
-        <p><strong>ID:</strong> {user?.id}</p>
-        <p><strong>Roles:</strong> {user?.roles?.join(", ") || "No roles"}</p>
+    <div className="px-4 py-6 sm:px-0">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-md p-8">
+          <UserDashboard 
+            user={user} 
+            onCallBackend={callBackend} 
+            onLogout={() => {}} // Logout handled by layout
+          />
+        </div>
       </div>
-      
-      <div style={{ marginBottom: "20px" }}>
-        <button onClick={testProtectedEndpoint} style={{ marginRight: "10px" }}>
-          Test Protected API
-        </button>
-        <button onClick={logout}>
-          Logout
-        </button>
-      </div>
-    </main>
+    </div>
   );
 }
+
+Dashboard.getLayout = function getLayout(page: ReactElement) {
+  return <AuthenticatedLayout>{page}</AuthenticatedLayout>;
+};
+
+// Explicitly require authentication
+Dashboard.requireAuth = true;
