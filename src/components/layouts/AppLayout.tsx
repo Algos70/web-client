@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../../lib/hooks/useAuth';
 import { ROUTES } from '../../lib/constants/routes';
 import LoadingSpinner from '../auth/LoadingSpinner';
+import Header from '../layout/Header';
+import Footer from '../layout/Footer';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -29,9 +31,15 @@ export default function AppLayout({ children, requireAuth = true }: AppLayoutPro
     return <LoadingSpinner />;
   }
 
+  const showHeaderFooter = router.pathname !== ROUTES.LOGIN;
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {children}
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {showHeaderFooter && <Header />}
+      <main className="flex-1">
+        {children}
+      </main>
+      {showHeaderFooter && <Footer />}
     </div>
   );
 }

@@ -27,13 +27,13 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="px-4 py-6 sm:px-0">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-md p-8">
+    <div className="py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-lg shadow-sm p-8">
           <UserDashboard 
             user={user} 
             onCallBackend={callBackend} 
-            onLogout={() => {}} // Logout handled by layout
+            onLogout={() => {}} // Logout handled by header
           />
         </div>
       </div>
