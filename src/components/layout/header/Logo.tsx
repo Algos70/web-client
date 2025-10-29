@@ -6,7 +6,7 @@ export default function Logo() {
     <div className="flex items-center">
       <Link href={ROUTES.HOME} className="flex items-center">
         <h1 className="text-xl font-bold text-gray-900">
-          MyApp
+          NoxCommerce
         </h1>
       </Link>
     </div>
