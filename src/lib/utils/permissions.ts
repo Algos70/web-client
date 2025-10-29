@@ -6,10 +6,10 @@ export const formatPermission = (permission: string): string => {
 };
 
 export const getPermissionColor = (permission: string): string => {
-  if (permission.includes("admin")) return "bg-red-100 text-red-800";
-  if (permission.includes("write")) return "bg-green-100 text-green-800";
-  if (permission.includes("read")) return "bg-blue-100 text-blue-800";
-  return "bg-gray-100 text-gray-800";
+  if (permission.includes("admin")) return "bg-rose-100 text-rose-800 border border-rose-200";
+  if (permission.includes("write")) return "bg-emerald-100 text-emerald-800 border border-emerald-200";
+  if (permission.includes("read")) return "bg-sky-100 text-sky-800 border border-sky-200";
+  return "bg-slate-100 text-slate-800 border border-slate-200";
 };
 
 export const hasPermission = (
