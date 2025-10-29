@@ -2,6 +2,8 @@ import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import { isPublicRoute } from "../lib/constants/routes";
 import AppLayout from "../components/layouts/AppLayout";
+import { ApolloProvider } from "@apollo/client/react";
+import {client} from "../lib/graphql/client"
 import "../globals.css";
 
 // Page component with layout support
@@ -25,8 +27,10 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const requireAuth = Component.requireAuth ?? !isPublic;
 
   return (
-    <AppLayout requireAuth={requireAuth}>
-      {getLayout(<Component {...pageProps} />)}
-    </AppLayout>
+    <ApolloProvider client={client}>
+      <AppLayout requireAuth={requireAuth}>
+        {getLayout(<Component {...pageProps} />)}
+      </AppLayout>
+    </ApolloProvider>
   );
 }

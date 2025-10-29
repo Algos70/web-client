@@ -101,21 +101,21 @@ export default function AdminPanel() {
               </button>
             </div>
 
-            {/* Analytics */}
+            {/* Category Management */}
             <div className="card p-4 hover:shadow-lg transition-all duration-300 border-l-4 border-l-amber-500">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
                   <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 00-2 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                 </div>
-                <h3 className="ml-3 text-base font-semibold text-slate-800">Analytics</h3>
+                <h3 className="ml-3 text-base font-semibold text-slate-800">Category Management</h3>
               </div>
               <p className="text-slate-600 text-xs mb-4 leading-relaxed">
-                Monitor sales performance and business metrics.
+                Organize and manage product categories and subcategories.
               </p>
               <button className="btn-secondary w-full text-sm py-2">
-                View Analytics
+                Manage Categories
               </button>
             </div>
 
