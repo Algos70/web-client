@@ -6,24 +6,29 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Home Page</h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Welcome! This is the home page.
-            </p>
-
-            <div className="space-y-4">
-              <Link
-                href={ROUTES.PROFILE}
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Go to Profile
-              </Link>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">E-Commerce Store 🚀</h1>
+          <p className="text-lg text-gray-600 mb-8">
+            Welcome to our store! Browse our products and categories below.
+          </p>
+          
+          <div className="flex space-x-4 justify-center mb-8">
+            <Link
+              href={ROUTES.PROFILE}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              Go to Profile
+            </Link>
+            <Link
+              href={ROUTES.ADMIN_CATEGORIES}
+              className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              Admin Categories
+            </Link>
           </div>
         </div>
+
       </div>
     </div>
   );
