@@ -1,37 +1,40 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
-  const { data: session } = useSession();
+  const { user, loading, login, logout, isAuthenticated } = useAuth();
 
   const callBackend = async () => {
     try {
-      const token = session?.accessToken;
-      console.log("Token:", token);
-      const res = await axios.get("http://localhost:4000/api/testRole", {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/protected`, {
+        credentials: "include",
       });
-      console.log("Success:", res.data);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Success:", data);
+      } else {
+        console.error("Request failed:", response.status);
+      }
     } catch (error) {
       console.error("Full error:", error);
-      if (axios.isAxiosError(error)) {
-        console.error("Response:", error.response?.data);
-        console.error("Status:", error.response?.status);
-        console.error("Headers:", error.response?.headers);
-      }
     }
   };
 
+  if (loading) {
+    return <main>Loading...</main>;
+  }
+
   return (
     <main>
-      {!session ? (
-        <button onClick={() => signIn("keycloak")}>Login with Keycloak</button>
+      {!isAuthenticated ? (
+        <button onClick={login}>Login with Keycloak</button>
       ) : (
         <>
-          <p>Welcome, {session.user?.name}</p>
-          <button onClick={callBackend}>Call Backend API</button>
-          <button onClick={() => signOut({ callbackUrl: "/" })}>Logout</button>
+          <p>Welcome, {user?.name}</p>
+          <p>Email: {user?.email}</p>
+          <p>Roles: {user?.roles?.join(", ")}</p>
+          <button onClick={callBackend}>Call Protected API</button>
+          <button onClick={logout}>Logout</button>
         </>
       )}
     </main>
