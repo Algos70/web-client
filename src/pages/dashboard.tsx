@@ -1,5 +1,5 @@
-import { useAuth } from "../hooks/useAuth";
-import { api } from "../utils/api";
+import { useAuth } from "../lib/hooks/useAuth";
+import { api } from "../lib/utils/api";
 import { useEffect } from "react";
 
 export default function Dashboard() {
