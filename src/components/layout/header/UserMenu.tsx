@@ -15,8 +15,7 @@ export default function UserMenu() {
   };
 
   const handleProfile = () => {
-    // TODO: Navigate to profile page when implemented
-    console.log('Navigate to profile');
+    router.push(ROUTES.PROFILE);
     setIsOpen(false);
   };
 

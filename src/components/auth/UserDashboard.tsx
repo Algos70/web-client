@@ -17,7 +17,7 @@ export default function UserDashboard({
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">Profile</h1>
       </div>
 
       <div className="bg-gray-50 rounded-lg p-4 space-y-2">

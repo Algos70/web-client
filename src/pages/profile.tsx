@@ -3,7 +3,7 @@ import { useAuth } from "../lib/hooks/useAuth";
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import UserDashboard from "../components/auth/UserDashboard";
 
-export default function Dashboard() {
+export default function Profile() {
   const { user } = useAuth();
 
   const callBackend = async () => {
@@ -41,9 +41,9 @@ export default function Dashboard() {
   );
 }
 
-Dashboard.getLayout = function getLayout(page: ReactElement) {
+Profile.getLayout = function getLayout(page: ReactElement) {
   return <AuthenticatedLayout>{page}</AuthenticatedLayout>;
 };
 
 // Explicitly require authentication
-Dashboard.requireAuth = true;
+Profile.requireAuth = true;
