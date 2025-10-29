@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../../lib/hooks/useAuth';
 import { useRouter } from 'next/router';
 import { ROUTES } from '../../../lib/constants/routes';
+import { hasPermission } from '../../../lib/utils/permissions';
 
 export default function UserMenu() {
   const { user, logout } = useAuth();
@@ -18,6 +19,13 @@ export default function UserMenu() {
     router.push(ROUTES.PROFILE);
     setIsOpen(false);
   };
+
+  const handleAdminPanel = () => {
+    router.push(ROUTES.ADMIN_PANEL);
+    setIsOpen(false);
+  };
+
+  const isAdmin = hasPermission(user?.permissions, 'admin_read');
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -67,6 +75,17 @@ export default function UserMenu() {
           >
             Profile
           </button>
+          {isAdmin && (
+            <>
+              <hr className="my-1 border-gray-200" />
+              <button
+                onClick={handleAdminPanel}
+                className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
+              >
+                Admin Panel
+              </button>
+            </>
+          )}
           <hr className="my-1 border-gray-200" />
           <button
             onClick={handleLogout}

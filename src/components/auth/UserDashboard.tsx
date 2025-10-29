@@ -38,16 +38,18 @@ export default function UserDashboard({
         <div className="text-gray-600">
           <span className="font-medium">Permissions:</span>
           <div className="mt-2 flex flex-wrap gap-1">
-            {user?.permissions?.map((permission: string, index: number) => (
-              <span
-                key={index}
-                className={`inline-block text-xs px-2 py-1 rounded ${getPermissionColor(
-                  permission
-                )}`}
-              >
-                {formatPermission(permission)}
-              </span>
-            ))}
+            {user?.permissions
+              ?.sort()
+              .map((permission: string, index: number) => (
+                <span
+                  key={index}
+                  className={`inline-block text-xs px-2 py-1 rounded ${getPermissionColor(
+                    permission
+                  )}`}
+                >
+                  {formatPermission(permission)}
+                </span>
+              ))}
           </div>
         </div>
       </div>

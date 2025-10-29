@@ -2,11 +2,12 @@ export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   PROFILE: "/profile",
+  ADMIN_PANEL: "/admin-panel",
 } as const;
 
 export const PUBLIC_ROUTES = [ROUTES.LOGIN];
 
-export const PROTECTED_ROUTES = [ROUTES.HOME, ROUTES.PROFILE];
+export const PROTECTED_ROUTES = [ROUTES.HOME, ROUTES.PROFILE, ROUTES.ADMIN_PANEL];
 
 export const isPublicRoute = (pathname: string): boolean => {
   return PUBLIC_ROUTES.includes(pathname as any);
