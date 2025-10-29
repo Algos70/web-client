@@ -68,12 +68,15 @@ export default function CategoryManagement() {
   if (error) return <div className="text-red-500 text-center py-8">Error: {error.message}</div>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="card p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Category Management</h1>
+        <div>
+          <h1 className="text-2xl font-bold gradient-text mb-2">Category Management</h1>
+          <p className="text-sm text-slate-600">Organize and manage product categories and subcategories.</p>
+        </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
         >
           Add Category
         </button>
@@ -101,7 +104,7 @@ export default function CategoryManagement() {
       )}
 
       {/* Categories Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg border overflow-hidden">
         <table className="min-w-full">
           <thead className="bg-gray-50">
             <tr>

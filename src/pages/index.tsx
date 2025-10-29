@@ -21,10 +21,10 @@ export default function Home() {
               Go to Profile
             </Link>
             <Link
-              href={ROUTES.ADMIN_CATEGORIES}
+              href={ROUTES.ADMIN_PANEL}
               className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
-              Admin Categories
+              Admin Panel
             </Link>
           </div>
         </div>
