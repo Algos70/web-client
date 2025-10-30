@@ -2,6 +2,7 @@ import { ReactElement, useState } from "react";
 import Head from "next/head";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
+import ClearCartModal from "../components/modal/ClearCartModal";
 import {
   useUserCart,
   useRemoveItemFromCart,
@@ -18,6 +19,7 @@ export default function CartPage() {
   const [decreaseItemQuantity] = useDecreaseItemQuantity();
   const [isClearing, setIsClearing] = useState(false);
   const [updatingItems, setUpdatingItems] = useState<Set<string>>(new Set());
+  const [showClearModal, setShowClearModal] = useState(false);
 
   const cart = cartData?.userCart;
   const items = cart?.items || [];
@@ -33,11 +35,10 @@ export default function CartPage() {
   };
 
   const handleClearCart = async () => {
-    if (!confirm("Are you sure you want to clear your cart?")) return;
-
     setIsClearing(true);
     try {
       await clearCart();
+      setShowClearModal(false);
     } catch (error) {
       console.error("Error clearing cart:", error);
     } finally {
@@ -151,7 +152,7 @@ export default function CartPage() {
           <h1 className="text-2xl font-bold text-slate-900">Shopping Cart</h1>
           {items.length > 0 && (
             <button
-              onClick={handleClearCart}
+              onClick={() => setShowClearModal(true)}
               disabled={isClearing}
               className="text-red-600 hover:text-red-800 hover:cursor-pointer text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -274,6 +275,13 @@ export default function CartPage() {
             </div>
           </div>
         )}
+
+        <ClearCartModal
+          isOpen={showClearModal}
+          onClose={() => setShowClearModal(false)}
+          onConfirm={handleClearCart}
+          isClearing={isClearing}
+        />
       </div>
     </>
   );
