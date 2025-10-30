@@ -27,7 +27,12 @@ export default function CategoryHeader({
           </li>
           <li>
             <span className="text-gray-400 mx-2">/</span>
-            <span className="text-gray-900 font-medium">Categories</span>
+            <button
+              onClick={() => router.push('/categories')}
+              className="text-gray-500 hover:text-gray-700 transition-colors font-medium"
+            >
+              Categories
+            </button>
           </li>
           <li>
             <span className="text-gray-400 mx-2">/</span>
