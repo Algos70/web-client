@@ -10,6 +10,7 @@ import {
   useUpdateItemQuantity,
   useDecreaseItemQuantity,
 } from "../lib/graphql/hooks";
+import { formatCurrency } from "../lib/utils/currency";
 
 export default function CartPage() {
   const { data: cartData, loading, error } = useUserCart();
@@ -46,21 +47,24 @@ export default function CartPage() {
     }
   };
 
-  const handleIncreaseQuantity = async (productId: string, currentQty: number) => {
-    setUpdatingItems(prev => new Set(prev).add(productId));
+  const handleIncreaseQuantity = async (
+    productId: string,
+    currentQty: number
+  ) => {
+    setUpdatingItems((prev) => new Set(prev).add(productId));
     try {
       await updateItemQuantity({
         variables: {
           input: {
             productId,
-            quantity: currentQty + 1
-          }
-        }
+            quantity: currentQty + 1,
+          },
+        },
       });
     } catch (error) {
-      console.error('Error updating item quantity:', error);
+      console.error("Error updating item quantity:", error);
     } finally {
-      setUpdatingItems(prev => {
+      setUpdatingItems((prev) => {
         const newSet = new Set(prev);
         newSet.delete(productId);
         return newSet;
@@ -68,21 +72,24 @@ export default function CartPage() {
     }
   };
 
-  const handleDecreaseQuantity = async (productId: string, currentQty: number) => {
-    setUpdatingItems(prev => new Set(prev).add(productId));
+  const handleDecreaseQuantity = async (
+    productId: string,
+    currentQty: number
+  ) => {
+    setUpdatingItems((prev) => new Set(prev).add(productId));
     try {
       await decreaseItemQuantity({
         variables: {
           input: {
             productId,
-            decreaseBy: 1
-          }
-        }
+            decreaseBy: 1,
+          },
+        },
       });
     } catch (error) {
-      console.error('Error decreasing item quantity:', error);
+      console.error("Error decreasing item quantity:", error);
     } finally {
-      setUpdatingItems(prev => {
+      setUpdatingItems((prev) => {
         const newSet = new Set(prev);
         newSet.delete(productId);
         return newSet;
@@ -94,14 +101,6 @@ export default function CartPage() {
     return items.reduce((total, item) => {
       return total + item.product.priceMinor * item.qty;
     }, 0);
-  };
-
-  const formatPrice = (priceMinor: number, currency: string) => {
-    const price = priceMinor / 100;
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency || "USD",
-    }).format(price);
   };
 
   if (loading) {
@@ -210,18 +209,25 @@ export default function CartPage() {
                               </p>
                             )}
                             <p className="text-lg font-semibold text-slate-900 mt-1">
-                              {formatPrice(
-                                item.product.priceMinor,
+                              {formatCurrency(
+                                item.product.priceMinor.toString(),
                                 item.product.currency
                               )}
                             </p>
                           </div>
                           <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2">
-                              <span className="text-sm text-slate-600">Qty:</span>
+                              <span className="text-sm text-slate-600">
+                                Qty:
+                              </span>
                               <div className="flex items-center space-x-1">
                                 <button
-                                  onClick={() => handleDecreaseQuantity(item.product.id, item.qty)}
+                                  onClick={() =>
+                                    handleDecreaseQuantity(
+                                      item.product.id,
+                                      item.qty
+                                    )
+                                  }
                                   disabled={updatingItems.has(item.product.id)}
                                   className="p-1 rounded-md border border-slate-300 hover:bg-slate-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Decrease quantity"
@@ -229,10 +235,17 @@ export default function CartPage() {
                                   <MinusIcon className="h-4 w-4" />
                                 </button>
                                 <span className="font-medium min-w-[2rem] text-center">
-                                  {updatingItems.has(item.product.id) ? "..." : item.qty}
+                                  {updatingItems.has(item.product.id)
+                                    ? "..."
+                                    : item.qty}
                                 </span>
                                 <button
-                                  onClick={() => handleIncreaseQuantity(item.product.id, item.qty)}
+                                  onClick={() =>
+                                    handleIncreaseQuantity(
+                                      item.product.id,
+                                      item.qty
+                                    )
+                                  }
                                   disabled={updatingItems.has(item.product.id)}
                                   className="p-1 rounded-md border border-slate-300 hover:bg-slate-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Increase quantity"
@@ -243,13 +256,14 @@ export default function CartPage() {
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-semibold text-slate-900">
-                                {formatPrice(
-                                  item.product.priceMinor * item.qty,
+                                {formatCurrency(
+                                  (
+                                    item.product.priceMinor * item.qty
+                                  ).toString(),
                                   item.product.currency
                                 )}
                               </p>
                             </div>
-
                           </div>
                         </div>
                       </div>
@@ -263,8 +277,8 @@ export default function CartPage() {
               <div className="flex justify-between items-center text-lg font-semibold text-slate-900 mb-4">
                 <span>Total:</span>
                 <span>
-                  {formatPrice(
-                    calculateTotal(),
+                  {formatCurrency(
+                    calculateTotal().toString(),
                     items[0]?.product.currency || "USD"
                   )}
                 </span>

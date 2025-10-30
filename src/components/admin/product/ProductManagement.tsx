@@ -4,6 +4,7 @@ import { Product } from "../../../lib/graphql/types";
 import ProductForm from "./ProductForm";
 import LoadingSpinner from "../../auth/LoadingSpinner";
 import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
+import { formatCurrency } from "../../../lib/utils/currency";
 
 export default function ProductManagement() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,9 +60,7 @@ export default function ProductManagement() {
     refetch();
   };
 
-  const formatPrice = (priceMinor: number, currency: string) => {
-    return `${(priceMinor / 100).toFixed(2)} ${currency}`;
-  };
+
 
   if (loading) return <LoadingSpinner />;
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
@@ -181,7 +180,7 @@ export default function ProductManagement() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                    {formatPrice(product.priceMinor, product.currency)}
+                    {formatCurrency(product.priceMinor.toString(), product.currency)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span

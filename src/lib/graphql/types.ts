@@ -48,17 +48,21 @@ export interface User {
 
 export interface Order {
   id: string;
+  totalMinor: string;
+  currency: string;
   status: string;
-  total: number;
   createdAt: string;
-  items?: OrderItem[];
+  updatedAt: string;
+  user: User;
+  items: OrderItem[];
 }
 
 export interface OrderItem {
   id: string;
   product: Product;
-  quantity: number;
-  price: number;
+  qty: number;
+  unitPriceMinor: string;
+  currency: string;
 }
 
 export interface Cart {
@@ -185,7 +189,7 @@ export interface DecreaseItemQuantityInput {
 export interface Wallet {
   id: string;
   currency: string;
-  balanceMinor: number;
+  balanceMinor: string;
   user: User;
   createdAt: string;
   updatedAt: string;
@@ -197,7 +201,7 @@ export interface WalletConnection {
 }
 
 export interface BalanceResponse {
-  balance: number;
+  balanceMinor: string;
   currency: string;
   userId: string;
 }
@@ -211,27 +215,35 @@ export interface TransferResponse {
 export interface CreateWalletInput {
   userId: string;
   currency: string;
-  initialBalance?: number;
+  initialBalanceMinor?: string;
 }
 
 export interface BalanceOperationInput {
-  amountMinor: number;
+  amountMinor: string;
 }
 
 export interface TransferInput {
   fromUserId: string;
   toUserId: string;
   currency: string;
-  amountMinor: number;
+  amountMinor: string;
 }
 
 export interface CreateUserWalletInput {
   currency: string;
-  initialBalance?: number;
+  initialBalanceMinor?: string;
 }
 
 export interface UserTransferInput {
   toWalletId: string;
   currency: string;
-  amountMinor: number;
+  amountMinor: string;
+}
+
+// Order Input Types
+export interface CreateOrderItemForOrderInput {
+  productId: string;
+  qty: number;
+  unitPriceMinor: string;
+  currency: string;
 }

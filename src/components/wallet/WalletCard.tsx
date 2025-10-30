@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { Wallet } from "../../lib/graphql/types";
+import { formatCurrency } from "../../lib/utils/currency";
 
 interface WalletCardProps {
   wallet: Wallet;
@@ -18,14 +19,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
-  // Convert minor units to major units (e.g., cents to dollars)
-  const formatCurrency = (amountMinor: number, currency: string): string => {
-    const amount = amountMinor / 100; // Assuming 2 decimal places
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency.toUpperCase(),
-    }).format(amount);
-  };
+
 
   // Generate color from currency hash
   const getCurrencyColor = (currency: string) => {

@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { Product } from "../../lib/graphql/types";
 import { useAddItemToCart } from "../../lib/graphql/hooks";
+import { formatCurrency } from "../../lib/utils/currency";
 
 interface ProductCardProps {
   product: Product;
@@ -11,13 +12,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
 
-  const formatPrice = (priceMinor: number, currency: string) => {
-    const price = priceMinor / 100;
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(price);
-  };
+
 
   const handleCardClick = () => {
     router.push(`/product/${product.slug}`);
@@ -83,7 +78,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         </h3>
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold text-gray-900">
-            {formatPrice(product.priceMinor, product.currency)}
+            {formatCurrency(product.priceMinor.toString(), product.currency)}
           </span>
           <button
             className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

@@ -3,6 +3,7 @@ import { Product } from "../../lib/graphql/types";
 import { useAddItemToCart } from "../../lib/graphql/hooks";
 import ProductStock from "./ProductStock";
 import ProductDetails from "./ProductDetails";
+import { formatCurrency } from "../../lib/utils/currency";
 
 interface ProductInfoProps {
   product: Product;
@@ -11,13 +12,7 @@ interface ProductInfoProps {
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
 
-  const formatPrice = (priceMinor: number, currency: string) => {
-    const price = priceMinor / 100;
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(price);
-  };
+
 
   const handleAddToCart = async () => {
     try {
@@ -68,7 +63,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
 
       <div className="text-xl font-bold text-gray-900 mb-3">
-        {formatPrice(product.priceMinor, product.currency)}
+        {formatCurrency(product.priceMinor.toString(), product.currency)}
       </div>
 
       <ProductStock stockQty={product.stockQty} />

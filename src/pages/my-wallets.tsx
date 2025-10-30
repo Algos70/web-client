@@ -5,8 +5,10 @@ import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import WalletPageHeader from "../components/wallet/WalletPageHeader";
 import CreateWalletModal from "../components/wallet/CreateWalletModal";
 import AddFundsModal from "../components/wallet/AddFundsModal";
+import TransferModal from "../components/wallet/TransferModal";
 import WalletGrid from "../components/wallet/WalletGrid";
 import EmptyWalletState from "../components/wallet/EmptyWalletState";
+import { toMinorUnits } from "../lib/utils/currency";
 
 import DeleteConfirmationModal from "../components/admin/modals/DeleteConfirmationModal";
 import {
@@ -14,6 +16,7 @@ import {
   useCreateUserWallet,
   useDeleteUserWallet,
   useIncreaseUserWalletBalance,
+  useTransferFromUserWallet,
 } from "../lib/graphql/hooks";
 
 export default function MyWalletsPage() {
@@ -23,6 +26,9 @@ export default function MyWalletsPage() {
     null
   );
   const [addFundsAmount, setAddFundsAmount] = useState("");
+  const [showTransferModal, setShowTransferModal] = useState<string | null>(null);
+  const [transferTargetWalletId, setTransferTargetWalletId] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     walletId: string;
@@ -43,6 +49,8 @@ export default function MyWalletsPage() {
   const [deleteUserWallet, { loading: deleteLoading }] = useDeleteUserWallet();
   const [increaseUserWalletBalance, { loading: increaseLoading }] =
     useIncreaseUserWalletBalance();
+  const [transferFromUserWallet, { loading: transferLoading }] =
+    useTransferFromUserWallet();
 
   const handleCreateWallet = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,7 +59,7 @@ export default function MyWalletsPage() {
         variables: {
           input: {
             currency: newWalletCurrency,
-            initialBalance: 0,
+            initialBalanceMinor: "0",
           },
         },
         errorPolicy: "all",
@@ -142,7 +150,7 @@ export default function MyWalletsPage() {
     if (!showAddFundsModal || !addFundsAmount) return;
 
     try {
-      const amountMinor = Math.round(parseFloat(addFundsAmount) * 100); // Convert to minor units
+      const amountMinor = toMinorUnits(addFundsAmount); // Convert to minor units as string
       const result = await increaseUserWalletBalance({
         variables: {
           walletId: showAddFundsModal,
@@ -182,8 +190,57 @@ export default function MyWalletsPage() {
   };
 
   const handleTransfer = (walletId: string) => {
-    // TODO: Implement transfer modal
-    toast.success("Transfer functionality will be implemented soon");
+    setShowTransferModal(walletId);
+    setTransferTargetWalletId("");
+    setTransferAmount("");
+  };
+
+  const handleTransferSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!showTransferModal || !transferTargetWalletId || !transferAmount) return;
+
+    try {
+      const amountMinor = toMinorUnits(transferAmount); // Convert to minor units as string
+      const wallet = wallets.find(w => w.id === showTransferModal);
+      
+      const result = await transferFromUserWallet({
+        variables: {
+          input: {
+            toWalletId: transferTargetWalletId,
+            currency: wallet?.currency || "",
+            amountMinor,
+          },
+        },
+        errorPolicy: "all",
+      });
+      
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("Failed to transfer funds");
+        }
+      } else {
+        setShowTransferModal(null);
+        setTransferTargetWalletId("");
+        setTransferAmount("");
+        toast.success("Funds transferred successfully!");
+      }
+    } catch (error: any) {
+      console.error("Error transferring funds:", error);
+      
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("Failed to transfer funds");
+      }
+    }
   };
 
   if (walletsLoading) {
@@ -254,6 +311,17 @@ export default function MyWalletsPage() {
             onClose={() => setShowAddFundsModal(null)}
           />
 
+          <TransferModal
+            isOpen={!!showTransferModal}
+            targetWalletId={transferTargetWalletId}
+            amount={transferAmount}
+            loading={transferLoading}
+            onTargetWalletIdChange={setTransferTargetWalletId}
+            onAmountChange={setTransferAmount}
+            onSubmit={handleTransferSubmit}
+            onClose={() => setShowTransferModal(null)}
+          />
+
           {wallets.length === 0 ? (
             <EmptyWalletState onCreateWallet={() => setShowCreateForm(true)} />
           ) : (
@@ -262,7 +330,7 @@ export default function MyWalletsPage() {
               onDelete={handleDeleteWallet}
               onAddFunds={handleAddFunds}
               onTransfer={handleTransfer}
-              isLoading={deleteLoading || increaseLoading}
+              isLoading={deleteLoading || increaseLoading || transferLoading}
             />
           )}
         </div>
