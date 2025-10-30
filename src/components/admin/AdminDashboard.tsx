@@ -1,7 +1,7 @@
-import AdminManagementCard from './AdminManagementCard';
+import AdminManagementCard from "./AdminManagementCard";
 
 interface AdminDashboardProps {
-  onNavigate: (view: 'dashboard' | 'categories' | 'products') => void;
+  onNavigate: (view: "dashboard" | "categories" | "products") => void;
 }
 
 export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
@@ -59,33 +59,34 @@ export default function AdminDashboard({ onNavigate }: AdminDashboardProps) {
           Admin Dashboard
         </h1>
         <p className="text-sm text-slate-600 max-w-xl mx-auto">
-          E-ticaret platformunuzu yönetmek ve operasyonları izlemek için kontrol merkezi.
+          Control center to manage your e-commerce platform and monitor
+          operations.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <AdminManagementCard
-          title="Ürün Yönetimi"
-          description="Envanter yönetimi ile ürünleri ekleyin, düzenleyin ve organize edin."
+          title="Product Management"
+          description="Add, edit and organize products with inventory management."
           icon={productIcon}
-          buttonText="Ürünleri Yönet"
+          buttonText="Manage Products"
           buttonClass="btn-success"
           borderColor="border-l-emerald-500"
           iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
-          onClick={() => onNavigate('products')}
+          onClick={() => onNavigate("products")}
         />
 
         <AdminManagementCard
-          title="Kategori Yönetimi"
-          description="Ürün kategorilerini ve alt kategorilerini organize edin ve yönetin."
+          title="Category Management"
+          description="Organize and manage product categories and subcategories."
           icon={categoryIcon}
-          buttonText="Kategorileri Yönet"
+          buttonText="Manage Categories"
           buttonClass="btn-secondary"
           borderColor="border-l-amber-500"
           iconBgColor="bg-amber-100"
           iconColor="text-amber-600"
-          onClick={() => onNavigate('categories')}
+          onClick={() => onNavigate("categories")}
         />
       </div>
     </div>

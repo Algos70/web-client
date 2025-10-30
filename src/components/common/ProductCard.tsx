@@ -21,9 +21,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="w-full h-48 object-fit bg-gray-100"
       />
       <div className="p-4">
-        <span className="text-sm text-blue-600 font-medium">
-          {product.category.name}
-        </span>
+        {product.category && (
+          <span className="text-sm text-blue-600 font-medium">
+            {product.category.name}
+          </span>
+        )}
         <h3 className="text-lg font-semibold text-gray-900 mt-1 mb-2">
           {product.name}
         </h3>
