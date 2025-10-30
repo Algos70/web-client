@@ -111,3 +111,103 @@ export const UPDATE_PRODUCT_PRICE = gql`
     }
   }
 `;
+
+// Cart Mutations
+export const ADD_ITEM_TO_CART = gql`
+  mutation AddItemToCart($input: AddItemToCartInput!) {
+    addItemToCart(input: $input) {
+      id
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const REMOVE_ITEM_FROM_CART = gql`
+  mutation RemoveItemFromCart($productId: ID!) {
+    removeItemFromCart(productId: $productId) {
+      id
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const CLEAR_CART = gql`
+  mutation ClearCart {
+    clearCart {
+      id
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

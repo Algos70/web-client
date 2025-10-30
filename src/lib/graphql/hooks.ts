@@ -15,6 +15,7 @@ import {
   GET_PRODUCT_AVAILABILITY,
   GET_FEATURED_PRODUCTS,
   SEARCH_PRODUCTS,
+  GET_USER_CART,
 } from "./queries";
 import {
   CREATE_CATEGORY,
@@ -26,6 +27,9 @@ import {
   INCREASE_PRODUCT_STOCK,
   DECREASE_PRODUCT_STOCK,
   UPDATE_PRODUCT_PRICE,
+  ADD_ITEM_TO_CART,
+  REMOVE_ITEM_FROM_CART,
+  CLEAR_CART,
 } from "./mutations";
 import type { 
   Category, 
@@ -39,7 +43,9 @@ import type {
   StockOperationInput,
   PriceUpdateInput,
   StockCheckResult,
-  ProductAvailability
+  ProductAvailability,
+  Cart,
+  AddItemToCartInput
 } from "./types";
 
 // Custom hooks for Category queries
@@ -198,5 +204,28 @@ export const useSearchProducts = (
 ) => {
   return useQuery<{ searchProducts: ProductConnection }>(SEARCH_PRODUCTS, {
     variables: { search, categoryId, inStockOnly, page, limit },
+  });
+};
+
+// Cart hooks
+export const useUserCart = () => {
+  return useQuery<{ userCart: Cart }>(GET_USER_CART);
+};
+
+export const useAddItemToCart = () => {
+  return useMutation<{ addItemToCart: Cart }, { input: AddItemToCartInput }>(ADD_ITEM_TO_CART, {
+    refetchQueries: [{ query: GET_USER_CART }],
+  });
+};
+
+export const useRemoveItemFromCart = () => {
+  return useMutation<{ removeItemFromCart: Cart }, { productId: string }>(REMOVE_ITEM_FROM_CART, {
+    refetchQueries: [{ query: GET_USER_CART }],
+  });
+};
+
+export const useClearCart = () => {
+  return useMutation<{ clearCart: Cart }>(CLEAR_CART, {
+    refetchQueries: [{ query: GET_USER_CART }],
   });
 };

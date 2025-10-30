@@ -449,8 +449,41 @@ export const GET_CATEGORY_PRODUCTS = gql`
   }
 `;
 
+// Cart Queries
+export const GET_USER_CART = gql`
+  query GetUserCart {
+    userCart {
+      id
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 // TODO: Add other queries when schemas are provided
 // - User queries
 // - Order queries
-// - Cart queries
 // - Wallet queries

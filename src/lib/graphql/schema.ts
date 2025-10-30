@@ -15,6 +15,13 @@ const baseTypeDefs = `
     totalPages: Int!
   }
 
+  type User {
+    id: ID!
+    email: String!
+    createdAt: String!
+    updatedAt: String!
+  }
+
   type Category {
     id: ID!
     slug: String!
@@ -145,4 +152,66 @@ const productTypeDefs = `
   }
 `;
 
-export const typeDefs = [baseTypeDefs, productTypeDefs];
+// GraphQL type definitions for Cart
+const cartTypeDefs = `
+  type Cart {
+    id: ID!
+    user: User!
+    items: [CartItem!]!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type CartItem {
+    id: ID!
+    cart: Cart!
+    product: Product!
+    qty: Int!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type CartListResult {
+    data: [Cart!]!
+    pagination: Pagination!
+  }
+
+  type CartStats {
+    totalCarts: Int!
+    activeCarts: Int!
+    emptyCarts: Int!
+  }
+
+  input CreateCartInput {
+    userId: ID!
+  }
+
+  input AddCartItemInput {
+    cartId: ID!
+    productId: ID!
+    qty: Int!
+  }
+
+  input AddItemToCartInput {
+    productId: ID!
+    quantity: Int!
+  }
+
+  input UpdateCartItemInput {
+    qty: Int!
+  }
+
+  extend type Query {
+    # User Cart Queries
+    userCart: Cart!
+  }
+
+  extend type Mutation {
+    # User Cart Mutations
+    addItemToCart(input: AddItemToCartInput!): Cart!
+    removeItemFromCart(productId: ID!): Cart!
+    clearCart: Cart!
+  }
+`;
+
+export const typeDefs = [baseTypeDefs, productTypeDefs, cartTypeDefs];

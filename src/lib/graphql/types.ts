@@ -41,9 +41,9 @@ export interface Review {
 
 export interface User {
   id: string;
-  name: string;
   email: string;
-  orders?: Order[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Order {
@@ -63,14 +63,30 @@ export interface OrderItem {
 
 export interface Cart {
   id: string;
+  user: User;
   items: CartItem[];
-  total: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CartItem {
   id: string;
+  cart: Cart;
   product: Product;
-  quantity: number;
+  qty: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CartListResult {
+  data: Cart[];
+  pagination: Pagination;
+}
+
+export interface CartStats {
+  totalCarts: number;
+  activeCarts: number;
+  emptyCarts: number;
 }
 
 // Input types for Category operations
@@ -135,3 +151,22 @@ export interface CategoryProductsResult {
   pagination: Pagination;
 }
 
+// Cart input types
+export interface CreateCartInput {
+  userId: string;
+}
+
+export interface AddCartItemInput {
+  cartId: string;
+  productId: string;
+  qty: number;
+}
+
+export interface AddItemToCartInput {
+  productId: string;
+  quantity: number;
+}
+
+export interface UpdateCartItemInput {
+  qty: number;
+}
