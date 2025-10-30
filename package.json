@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.8",
+    "@heroicons/react": "^2.2.0",
     "@tailwindcss/postcss": "^4.1.16",
     "axios": "^1.13.1",
     "graphql": "^16.11.0",

@@ -454,10 +454,6 @@ export const GET_USER_CART = gql`
   query GetUserCart {
     userCart {
       id
-      user {
-        id
-        email
-      }
       items {
         id
         qty

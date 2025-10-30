@@ -63,7 +63,7 @@ export interface OrderItem {
 
 export interface Cart {
   id: string;
-  user: User;
+  user?: User;
   items: CartItem[];
   createdAt: string;
   updatedAt: string;

@@ -156,7 +156,7 @@ const productTypeDefs = `
 const cartTypeDefs = `
   type Cart {
     id: ID!
-    user: User!
+    user: User
     items: [CartItem!]!
     createdAt: String!
     updatedAt: String!
