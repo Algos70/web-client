@@ -1,4 +1,5 @@
 import { ReactElement } from 'react';
+import Head from "next/head";
 import { useAuth } from "../lib/hooks/useAuth";
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import UserDashboard from "../components/auth/UserDashboard";
@@ -27,17 +28,23 @@ export default function Profile() {
   };
 
   return (
-    <div className="py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <UserDashboard 
-            user={user} 
-            onCallBackend={callBackend} 
-            onLogout={() => {}} // Logout handled by header
-          />
+    <>
+      <Head>
+        <title>Profil - E-Ticaret Mağazası</title>
+        <meta name="description" content="Kullanıcı profili ve hesap ayarları." />
+      </Head>
+      <div className="py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-sm p-8">
+            <UserDashboard 
+              user={user} 
+              onCallBackend={callBackend} 
+              onLogout={() => {}} // Logout handled by header
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import Head from "next/head";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import HeroHeader from "../components/common/HeroHeader";
 import FeaturedProducts from "../components/common/FeaturedProducts";
@@ -6,7 +7,12 @@ import CategoriesSection from "../components/common/CategoriesSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <>
+      <Head>
+        <title>Ana Sayfa - E-Ticaret Mağazası</title>
+        <meta name="description" content="En iyi ürünleri keşfedin ve uygun fiyatlarla alışveriş yapın." />
+      </Head>
+      <div className="min-h-screen">
       <HeroHeader 
         title="Welcome to Our Store 🚀"
         subtitle="Discover amazing products at unbeatable prices. Shop with confidence and enjoy fast delivery."
@@ -36,6 +42,7 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   );
 }
 

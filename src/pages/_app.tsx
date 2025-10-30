@@ -1,5 +1,6 @@
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import { isPublicRoute } from "../lib/constants/routes";
 import AppLayout from "../components/layouts/AppLayout";
 import { ApolloProvider } from "@apollo/client/react";
@@ -27,10 +28,18 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const requireAuth = Component.requireAuth ?? !isPublic;
 
   return (
-    <ApolloProvider client={client}>
-      <AppLayout requireAuth={requireAuth}>
-        {getLayout(<Component {...pageProps} />)}
-      </AppLayout>
-    </ApolloProvider>
+    <>
+      <Head>
+        <title>E-Ticaret Mağazası</title>
+        <meta name="description" content="En iyi ürünleri keşfedin ve güvenle alışveriş yapın." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <ApolloProvider client={client}>
+        <AppLayout requireAuth={requireAuth}>
+          {getLayout(<Component {...pageProps} />)}
+        </AppLayout>
+      </ApolloProvider>
+    </>
   );
 }
