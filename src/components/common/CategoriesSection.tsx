@@ -7,91 +7,34 @@ interface CategoriesQueryResponse {
   categories: CategoryConnection;
 }
 
-// Helper function to get unique background color based on category name
-function getCategoryColor(categoryName: string): string {
-  const colorMap: { [key: string]: string } = {
-    electronics: "from-blue-500 to-blue-700",
-    fashion: "from-pink-500 to-rose-600",
-    home: "from-green-500 to-emerald-600",
-    garden: "from-lime-500 to-green-600",
-    sports: "from-orange-500 to-red-600",
-    books: "from-purple-500 to-indigo-600",
-    beauty: "from-rose-400 to-pink-600",
-    toys: "from-yellow-400 to-orange-500",
-    automotive: "from-gray-600 to-gray-800",
-    food: "from-amber-500 to-orange-600",
-    health: "from-teal-500 to-cyan-600",
-    music: "from-violet-500 to-purple-600",
-    art: "from-fuchsia-500 to-pink-600",
-    travel: "from-sky-500 to-blue-600",
-    pet: "from-emerald-400 to-teal-600",
-  };
-
-  const lowerName = categoryName.toLowerCase();
-
-  // Try to find a matching color
-  for (const [key, color] of Object.entries(colorMap)) {
-    if (lowerName.includes(key)) {
-      return color;
-    }
-  }
-
-  // Generate a unique color based on category name hash if no match found
+// Helper function to get unique background color based on category slug
+function getCategoryColor(categorySlug: string): string {
+  // Generate a unique color based on category slug hash
   let hash = 0;
-  for (let i = 0; i < categoryName.length; i++) {
-    hash = categoryName.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < categorySlug.length; i++) {
+    hash = categorySlug.charCodeAt(i) + ((hash << 5) - hash);
   }
 
   const colors = [
-    "from-indigo-500 to-blue-600",
-    "from-purple-500 to-pink-600",
-    "from-green-500 to-teal-600",
-    "from-yellow-500 to-orange-600",
-    "from-red-500 to-pink-600",
-    "from-blue-500 to-indigo-600",
-    "from-teal-500 to-green-600",
+    "from-blue-500 to-blue-700",
+    "from-pink-500 to-rose-600",
+    "from-green-500 to-emerald-600",
+    "from-purple-500 to-indigo-600",
     "from-orange-500 to-red-600",
+    "from-teal-500 to-cyan-600",
+    "from-yellow-500 to-orange-600",
+    "from-indigo-500 to-purple-600",
+    "from-rose-500 to-pink-600",
+    "from-emerald-500 to-teal-600",
+    "from-amber-500 to-orange-600",
+    "from-sky-500 to-blue-600",
+    "from-violet-500 to-purple-600",
+    "from-lime-500 to-green-600",
+    "from-fuchsia-500 to-pink-600",
+    "from-cyan-500 to-teal-600",
   ];
 
   return colors[Math.abs(hash) % colors.length];
-}
-
-// Helper function to get category icon based on name
-function getCategoryIcon(categoryName: string): string {
-  const iconMap: { [key: string]: string } = {
-    electronics: "📱",
-    fashion: "👗",
-    home: "🏠",
-    garden: "🌱",
-    sports: "⚽",
-    books: "📚",
-    beauty: "💄",
-    toys: "🧸",
-    automotive: "🚗",
-    food: "🍕",
-    health: "💊",
-    music: "🎵",
-    art: "🎨",
-    travel: "✈️",
-    pet: "🐕",
-    jewelry: "💎",
-    furniture: "🪑",
-    kitchen: "🍳",
-    baby: "👶",
-    office: "💼",
-  };
-
-  const lowerName = categoryName.toLowerCase();
-
-  // Try to find a matching icon
-  for (const [key, icon] of Object.entries(iconMap)) {
-    if (lowerName.includes(key)) {
-      return icon;
-    }
-  }
-
-  // Default icon if no match found
-  return "🛍️";
 }
 
 export default function CategoriesSection() {
@@ -181,7 +124,7 @@ export default function CategoriesSection() {
                 {/* Gradient background with unique color for each category */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${getCategoryColor(
-                    category.name
+                    category.slug
                   )} opacity-90 group-hover:opacity-95 transition-opacity duration-300`}
                 ></div>
 
@@ -197,9 +140,7 @@ export default function CategoriesSection() {
                   <div className="mb-4">
                     {/* Category icon based on name */}
                     <div className="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mb-3 group-hover:bg-opacity-30 transition-all duration-300">
-                      <span className="text-2xl">
-                        {getCategoryIcon(category.name)}
-                      </span>
+                      <span className="text-2xl">🛍️</span>
                     </div>
                   </div>
 
