@@ -121,3 +121,10 @@ export interface StockCheckResult {
   requiredQty: number;
 }
 
+export interface ProductAvailability {
+  productId: string;
+  available: boolean;
+  requiredQty: number;
+  stockQty: number;
+}
+

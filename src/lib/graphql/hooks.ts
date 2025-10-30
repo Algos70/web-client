@@ -8,6 +8,13 @@ import {
   GET_ADMIN_PRODUCT_BY_SLUG,
   GET_ADMIN_PRODUCTS_BY_CATEGORY,
   GET_ADMIN_PRODUCT_STOCK_CHECK,
+  GET_PRODUCTS,
+  GET_PRODUCT,
+  GET_PRODUCT_BY_SLUG,
+  GET_PRODUCTS_BY_CATEGORY,
+  GET_PRODUCT_AVAILABILITY,
+  GET_FEATURED_PRODUCTS,
+  SEARCH_PRODUCTS,
 } from "./queries";
 import {
   CREATE_CATEGORY,
@@ -31,7 +38,8 @@ import type {
   UpdateProductInput,
   StockOperationInput,
   PriceUpdateInput,
-  StockCheckResult
+  StockCheckResult,
+  ProductAvailability
 } from "./types";
 
 // Custom hooks for Category queries
@@ -132,4 +140,63 @@ export const useDecreaseProductStock = () => {
 
 export const useUpdateProductPrice = () => {
   return useMutation<{ adminUpdateProductPrice: Product }, { id: string; input: PriceUpdateInput }>(UPDATE_PRODUCT_PRICE);
+};
+
+// Public Product hooks
+export const useProducts = (
+  page: number = 1, 
+  limit: number = 10, 
+  search?: string, 
+  categoryId?: string, 
+  inStockOnly: boolean = true
+) => {
+  return useQuery<{ products: ProductConnection }>(GET_PRODUCTS, {
+    variables: { page, limit, search, categoryId, inStockOnly },
+  });
+};
+
+export const useProduct = (id: string) => {
+  return useQuery<{ product: Product }>(GET_PRODUCT, {
+    variables: { id },
+    skip: !id,
+  });
+};
+
+export const useProductBySlug = (slug: string) => {
+  return useQuery<{ productBySlug: Product }>(GET_PRODUCT_BY_SLUG, {
+    variables: { slug },
+    skip: !slug,
+  });
+};
+
+export const useProductsByCategory = (categoryId: string) => {
+  return useQuery<{ productsByCategory: Product[] }>(GET_PRODUCTS_BY_CATEGORY, {
+    variables: { categoryId },
+    skip: !categoryId,
+  });
+};
+
+export const useProductAvailability = (id: string, qty: number = 1) => {
+  return useQuery<{ productAvailability: ProductAvailability }>(GET_PRODUCT_AVAILABILITY, {
+    variables: { id, qty },
+    skip: !id,
+  });
+};
+
+export const useFeaturedProducts = (limit: number = 8) => {
+  return useQuery<{ featuredProducts: ProductConnection }>(GET_FEATURED_PRODUCTS, {
+    variables: { limit },
+  });
+};
+
+export const useSearchProducts = (
+  search?: string,
+  categoryId?: string,
+  inStockOnly: boolean = true,
+  page: number = 1,
+  limit: number = 10
+) => {
+  return useQuery<{ searchProducts: ProductConnection }>(SEARCH_PRODUCTS, {
+    variables: { search, categoryId, inStockOnly, page, limit },
+  });
 };

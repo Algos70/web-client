@@ -74,7 +74,15 @@ const productTypeDefs = `
     requiredQty: Int!
   }
 
+  type ProductAvailability {
+    productId: ID!
+    available: Boolean!
+    requiredQty: Int!
+    stockQty: Int!
+  }
+
   extend type Query {
+    # Admin queries
     adminProducts(
       page: Int = 1
       limit: Int = 10
@@ -86,6 +94,27 @@ const productTypeDefs = `
     adminProductBySlug(slug: String!): Product
     adminProductsByCategory(categoryId: ID!): [Product!]!
     adminProductStockCheck(id: ID!, qty: Int = 1): StockCheckResult!
+    
+    # Public queries
+    products(
+      page: Int = 1
+      limit: Int = 10
+      search: String
+      categoryId: ID
+      inStockOnly: Boolean = true
+    ): ProductConnection!
+    product(id: ID!): Product!
+    productBySlug(slug: String!): Product!
+    productsByCategory(categoryId: ID!): [Product!]!
+    productAvailability(id: ID!, qty: Int = 1): ProductAvailability!
+    featuredProducts(limit: Int = 8): ProductConnection!
+    searchProducts(
+      search: String
+      categoryId: ID
+      inStockOnly: Boolean = true
+      page: Int = 1
+      limit: Int = 10
+    ): ProductConnection!
   }
 
   extend type Mutation {
