@@ -1,6 +1,7 @@
 import { ReactElement, useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import {
   useUserCart,
@@ -64,13 +65,13 @@ export default function PaymentPage() {
 
   const handleCreateOrder = async () => {
     if (!selectedWalletId) {
-      alert("Please select a wallet to proceed");
+      toast.error("Please select a wallet to proceed");
       return;
     }
 
     const selectedWallet = compatibleWallets.find(w => w.id === selectedWalletId);
     if (!selectedWallet) {
-      alert("Selected wallet not found");
+      toast.error("Selected wallet not found");
       return;
     }
 
@@ -79,7 +80,7 @@ export default function PaymentPage() {
     const walletBalance = parseInt(selectedWallet.balanceMinor);
     
     if (walletBalance < requiredAmount) {
-      alert(`Insufficient balance. Required: ${formatCurrency(requiredAmount.toString(), selectedWallet.currency)}, Available: ${formatCurrency(selectedWallet.balanceMinor, selectedWallet.currency)}`);
+      toast.error(`Insufficient balance. Required: ${formatCurrency(requiredAmount.toString(), selectedWallet.currency)}, Available: ${formatCurrency(selectedWallet.balanceMinor, selectedWallet.currency)}`);
       return;
     }
 
@@ -91,15 +92,33 @@ export default function PaymentPage() {
             walletId: selectedWalletId,
           },
         },
+        errorPolicy: "all",
       });
 
-      if (result.data?.createOrderFromCart) {
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("An error occurred while creating the order.");
+        }
+      } else if (result.data?.createOrderFromCart) {
+        toast.success("Order placed successfully!");
         // Redirect to order confirmation or orders page
-        router.push('/profile?tab=orders');
+        router.push('/my-orders');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating order:", error);
-      alert("Failed to create order. Please try again.");
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("Failed to create order. Please try again.");
+      }
     } finally {
       setIsProcessing(false);
     }
