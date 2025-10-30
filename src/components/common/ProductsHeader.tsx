@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+import Breadcrumb from "./Breadcrumb";
+import { getProductsBreadcrumbs } from "../../lib/utils/breadcrumbHelpers";
 
 interface ProductsHeaderProps {
   productsCount: number;
@@ -9,26 +10,11 @@ export default function ProductsHeader({
   productsCount, 
   totalProducts 
 }: ProductsHeaderProps) {
-  const router = useRouter();
+  const breadcrumbItems = getProductsBreadcrumbs();
 
   return (
     <div className="mb-8">
-      <nav className="flex mb-4" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-2">
-          <li>
-            <button
-              onClick={() => router.push("/")}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Home
-            </button>
-          </li>
-          <li>
-            <span className="text-gray-400 mx-2">/</span>
-            <span className="text-gray-900 font-medium">All Products</span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb items={breadcrumbItems} />
 
       <h1 className="text-3xl font-bold text-gray-900 mb-2">All Products</h1>
       <p className="text-gray-600">

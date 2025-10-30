@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { Product } from "../../lib/graphql/types";
 
 interface ProductCardProps {
@@ -5,6 +6,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const router = useRouter();
+  
   const formatPrice = (priceMinor: number, currency: string) => {
     const price = priceMinor / 100;
     return new Intl.NumberFormat("en-US", {
@@ -13,8 +16,15 @@ export default function ProductCard({ product }: ProductCardProps) {
     }).format(price);
   };
 
+  const handleCardClick = () => {
+    router.push(`/product/${product.slug}`);
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div 
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+      onClick={handleCardClick}
+    >
       <img
         src="/images/placeholder-img.png"
         alt={product.name}
@@ -36,6 +46,10 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={product.stockQty === 0}
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent card click when button is clicked
+              // Add to cart logic here
+            }}
           >
             {product.stockQty === 0 ? "Out of Stock" : "Add to Cart"}
           </button>

@@ -3,9 +3,11 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { useQuery } from '@apollo/client/react';
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
+import Breadcrumb from "../components/common/Breadcrumb";
 import Pagination from "../components/common/Pagination";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import ErrorPage from "../components/common/ErrorPage";
+import { getCategoriesBreadcrumbs } from "../lib/utils/breadcrumbHelpers";
 import { GET_CATEGORIES } from "../lib/graphql/queries";
 import { CategoryConnection } from "../lib/graphql/types";
 
@@ -151,22 +153,7 @@ export default function CategoriesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Page Header */}
           <div className="mb-8">
-            <nav className="flex mb-4" aria-label="Breadcrumb">
-              <ol className="flex items-center space-x-2">
-                <li>
-                  <button
-                    onClick={() => router.push("/")}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    Home
-                  </button>
-                </li>
-                <li>
-                  <span className="text-gray-400 mx-2">/</span>
-                  <span className="text-gray-900 font-medium">All Categories</span>
-                </li>
-              </ol>
-            </nav>
+            <Breadcrumb items={getCategoriesBreadcrumbs()} />
             
             <h1 className="text-3xl font-bold text-gray-900 mb-2">All Categories</h1>
             <p className="text-gray-600">

@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+import Breadcrumb from "./Breadcrumb";
+import { getCategoryBreadcrumbs } from "../../lib/utils/breadcrumbHelpers";
 
 interface CategoryHeaderProps {
   categoryName?: string;
@@ -11,35 +12,11 @@ export default function CategoryHeader({
   productsCount, 
   totalProducts 
 }: CategoryHeaderProps) {
-  const router = useRouter();
+  const breadcrumbItems = getCategoryBreadcrumbs(categoryName);
 
   return (
     <div className="mb-8">
-      <nav className="flex mb-4" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-2">
-          <li>
-            <button
-              onClick={() => router.push('/')}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Home
-            </button>
-          </li>
-          <li>
-            <span className="text-gray-400 mx-2">/</span>
-            <button
-              onClick={() => router.push('/categories')}
-              className="text-gray-500 hover:text-gray-700 transition-colors font-medium"
-            >
-              Categories
-            </button>
-          </li>
-          <li>
-            <span className="text-gray-400 mx-2">/</span>
-            <span className="text-gray-900 font-medium">{categoryName}</span>
-          </li>
-        </ol>
-      </nav>
+      <Breadcrumb items={breadcrumbItems} />
       
       <h1 className="text-3xl font-bold text-gray-900 mb-2">{categoryName}</h1>
       <p className="text-gray-600">
