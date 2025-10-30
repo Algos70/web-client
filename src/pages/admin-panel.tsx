@@ -5,7 +5,7 @@ import { hasPermission } from '../lib/utils/permissions';
 import { ROUTES } from '../lib/constants/routes';
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import LoadingSpinner from '../components/auth/LoadingSpinner';
-import CategoryManagement from '../components/admin/CategoryManagement';
+import CategoryManagement from '../components/admin/category/CategoryManagement';
 
 export default function AdminPanel() {
   const { user, loading } = useAuth();
