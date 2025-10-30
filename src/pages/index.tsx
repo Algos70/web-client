@@ -1,35 +1,40 @@
 import { ReactElement } from "react";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
-import { ROUTES } from "../lib/constants/routes";
-import Link from "next/link";
+import HeroHeader from "../components/common/HeroHeader";
+import FeaturedProducts from "../components/common/FeaturedProducts";
+import CategoriesSection from "../components/common/CategoriesSection";
 
 export default function Home() {
   return (
-    <div className="py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">E-Commerce Store 🚀</h1>
-          <p className="text-lg text-gray-600 mb-8">
-            Welcome to our store! Browse our products and categories below.
-          </p>
-          
-          <div className="flex space-x-4 justify-center mb-8">
-            <Link
-              href={ROUTES.PROFILE}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-            >
-              Go to Profile
-            </Link>
-            <Link
-              href={ROUTES.ADMIN_PANEL}
-              className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-            >
-              Admin Panel
-            </Link>
+    <div className="min-h-screen">
+      <HeroHeader 
+        title="Welcome to Our Store 🚀"
+        subtitle="Discover amazing products at unbeatable prices. Shop with confidence and enjoy fast delivery."
+      />
+      
+      <FeaturedProducts />
+      
+      <CategoriesSection />
+      
+      {/* Stats Section */}
+      <section className="py-16 bg-blue-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-4xl font-bold mb-2">10K+</div>
+              <div className="text-blue-100">Happy Customers</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">1000+</div>
+              <div className="text-blue-100">Products Available</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold mb-2">24/7</div>
+              <div className="text-blue-100">Customer Support</div>
+            </div>
           </div>
         </div>
-
-      </div>
+      </section>
     </div>
   );
 }
