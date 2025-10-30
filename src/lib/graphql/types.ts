@@ -11,7 +11,13 @@ export interface Category {
 export interface Product {
   id: string;
   name: string;
-  // Add other product fields when you share Product schema
+  slug: string;
+  priceMinor: number;
+  currency: string;
+  stockQty: number;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
 }
 
 export interface Pagination {
@@ -77,3 +83,41 @@ export interface UpdateCategoryInput {
   slug?: string;
   name?: string;
 }
+
+// Input types for Product operations
+export interface CreateProductInput {
+  name: string;
+  slug: string;
+  priceMinor: number;
+  currency: string;
+  stockQty: number;
+  categoryId: string;
+}
+
+export interface UpdateProductInput {
+  name?: string;
+  slug?: string;
+  priceMinor?: number;
+  currency?: string;
+  stockQty?: number;
+  categoryId?: string;
+}
+
+export interface StockOperationInput {
+  qty: number;
+}
+
+export interface PriceUpdateInput {
+  priceMinor: number;
+}
+
+export interface ProductConnection {
+  products: Product[];
+  pagination: Pagination;
+}
+
+export interface StockCheckResult {
+  inStock: boolean;
+  requiredQty: number;
+}
+

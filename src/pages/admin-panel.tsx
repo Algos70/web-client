@@ -6,11 +6,12 @@ import { ROUTES } from '../lib/constants/routes';
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import LoadingSpinner from '../components/auth/LoadingSpinner';
 import CategoryManagement from '../components/admin/category/CategoryManagement';
+import ProductManagement from '../components/admin/product/ProductManagement';
 
 export default function AdminPanel() {
   const { user, loading } = useAuth();
   const router = useRouter();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'categories'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'categories' | 'products'>('dashboard');
 
   useEffect(() => {
     if (!loading && user) {
@@ -58,6 +59,16 @@ export default function AdminPanel() {
               </div>
             </li>
           )}
+          {currentView === 'products' && (
+            <li>
+              <div className="flex items-center">
+                <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path>
+                </svg>
+                <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">Product Management</span>
+              </div>
+            </li>
+          )}
         </ol>
       </nav>
     </div>
@@ -70,6 +81,8 @@ export default function AdminPanel() {
         
         {currentView === 'categories' ? (
           <CategoryManagement />
+        ) : currentView === 'products' ? (
+          <ProductManagement />
         ) : (
           <>
             <div className="card p-6 mb-6">
@@ -99,7 +112,10 @@ export default function AdminPanel() {
               <p className="text-slate-600 text-xs mb-4 leading-relaxed">
                 Add, edit, and organize products with inventory management.
               </p>
-              <button className="btn-success w-full text-sm py-2 hover:cursor-pointer">
+              <button 
+                onClick={() => setCurrentView('products')}
+                className="btn-success w-full text-sm py-2 hover:cursor-pointer"
+              >
                 Manage Products
               </button>
             </div>
