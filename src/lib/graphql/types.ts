@@ -128,3 +128,10 @@ export interface ProductAvailability {
   stockQty: number;
 }
 
+// New type for category products result
+export interface CategoryProductsResult {
+  category: Category;
+  products: Product[];
+  pagination: Pagination;
+}
+

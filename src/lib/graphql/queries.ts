@@ -59,8 +59,20 @@ export const GET_ADMIN_CATEGORY_BY_SLUG = gql`
 
 // Product Queries
 export const GET_ADMIN_PRODUCTS = gql`
-  query GetAdminProducts($page: Int = 1, $limit: Int = 10, $search: String, $categoryId: ID, $inStockOnly: Boolean) {
-    adminProducts(page: $page, limit: $limit, search: $search, categoryId: $categoryId, inStockOnly: $inStockOnly) {
+  query GetAdminProducts(
+    $page: Int = 1
+    $limit: Int = 10
+    $search: String
+    $categoryId: ID
+    $inStockOnly: Boolean
+  ) {
+    adminProducts(
+      page: $page
+      limit: $limit
+      search: $search
+      categoryId: $categoryId
+      inStockOnly: $inStockOnly
+    ) {
       products {
         id
         name
@@ -157,8 +169,20 @@ export const GET_ADMIN_PRODUCT_STOCK_CHECK = gql`
 
 // Public Product Queries
 export const GET_PRODUCTS = gql`
-  query GetProducts($page: Int = 1, $limit: Int = 10, $search: String, $categoryId: ID, $inStockOnly: Boolean = true) {
-    products(page: $page, limit: $limit, search: $search, categoryId: $categoryId, inStockOnly: $inStockOnly) {
+  query GetProducts(
+    $page: Int = 1
+    $limit: Int = 10
+    $search: String
+    $categoryId: ID
+    $inStockOnly: Boolean = true
+  ) {
+    products(
+      page: $page
+      limit: $limit
+      search: $search
+      categoryId: $categoryId
+      inStockOnly: $inStockOnly
+    ) {
       products {
         id
         name
@@ -284,8 +308,122 @@ export const GET_FEATURED_PRODUCTS = gql`
 `;
 
 export const SEARCH_PRODUCTS = gql`
-  query SearchProducts($search: String, $categoryId: ID, $inStockOnly: Boolean = true, $page: Int = 1, $limit: Int = 10) {
-    searchProducts(search: $search, categoryId: $categoryId, inStockOnly: $inStockOnly, page: $page, limit: $limit) {
+  query SearchProducts(
+    $search: String
+    $categoryId: ID
+    $inStockOnly: Boolean = true
+    $page: Int = 1
+    $limit: Int = 10
+  ) {
+    searchProducts(
+      search: $search
+      categoryId: $categoryId
+      inStockOnly: $inStockOnly
+      page: $page
+      limit: $limit
+    ) {
+      products {
+        id
+        name
+        slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
+      }
+      pagination {
+        page
+        limit
+        total
+        totalPages
+      }
+    }
+  }
+`;
+
+// Public Category Queries
+export const GET_CATEGORIES = gql`
+  query GetCategories($page: Int = 1, $limit: Int = 10, $search: String) {
+    categories(page: $page, limit: $limit, search: $search) {
+      categories {
+        id
+        slug
+        name
+        createdAt
+        updatedAt
+        products {
+          id
+          name
+        }
+      }
+      pagination {
+        page
+        limit
+        total
+        totalPages
+      }
+    }
+  }
+`;
+
+export const GET_CATEGORY = gql`
+  query GetCategory($id: ID!) {
+    category(id: $id) {
+      id
+      slug
+      name
+      createdAt
+      updatedAt
+      products {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_CATEGORY_BY_SLUG = gql`
+  query GetCategoryBySlug($slug: String!) {
+    categoryBySlug(slug: $slug) {
+      id
+      slug
+      name
+      createdAt
+      updatedAt
+      products {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_CATEGORY_PRODUCTS = gql`
+  query GetCategoryProducts(
+    $slug: String!
+    $page: Int = 1
+    $limit: Int = 10
+    $inStockOnly: Boolean = true
+  ) {
+    categoryProducts(
+      slug: $slug
+      page: $page
+      limit: $limit
+      inStockOnly: $inStockOnly
+    ) {
+      category {
+        id
+        slug
+        name
+        createdAt
+        updatedAt
+      }
       products {
         id
         name
@@ -312,7 +450,7 @@ export const SEARCH_PRODUCTS = gql`
 `;
 
 // TODO: Add other queries when schemas are provided
-// - User queries  
+// - User queries
 // - Order queries
 // - Cart queries
 // - Wallet queries

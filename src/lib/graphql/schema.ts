@@ -21,6 +21,18 @@ const baseTypeDefs = `
     name: String!
     createdAt: String!
     updatedAt: String!
+    products: [Product!]
+  }
+
+  type CategoryConnection {
+    categories: [Category!]!
+    pagination: Pagination!
+  }
+
+  type CategoryProductsResult {
+    category: Category!
+    products: [Product!]!
+    pagination: Pagination!
   }
 `;
 
@@ -95,7 +107,13 @@ const productTypeDefs = `
     adminProductsByCategory(categoryId: ID!): [Product!]!
     adminProductStockCheck(id: ID!, qty: Int = 1): StockCheckResult!
     
-    # Public queries
+    # Public category queries
+    categories(page: Int = 1, limit: Int = 10, search: String): CategoryConnection!
+    category(id: ID!): Category
+    categoryBySlug(slug: String!): Category
+    categoryProducts(slug: String!, page: Int = 1, limit: Int = 10, inStockOnly: Boolean = true): CategoryProductsResult!
+    
+    # Public product queries
     products(
       page: Int = 1
       limit: Int = 10
