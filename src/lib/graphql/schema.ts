@@ -201,6 +201,16 @@ const cartTypeDefs = `
     qty: Int!
   }
 
+  input UpdateItemQuantityInput {
+    productId: ID!
+    quantity: Int!
+  }
+
+  input DecreaseItemQuantityInput {
+    productId: ID!
+    decreaseBy: Int = 1
+  }
+
   extend type Query {
     # User Cart Queries
     userCart: Cart!
@@ -210,6 +220,8 @@ const cartTypeDefs = `
     # User Cart Mutations
     addItemToCart(input: AddItemToCartInput!): Cart!
     removeItemFromCart(productId: ID!): Cart!
+    updateItemQuantity(input: UpdateItemQuantityInput!): Cart!
+    decreaseItemQuantity(input: DecreaseItemQuantityInput!): Cart!
     clearCart: Cart!
   }
 `;

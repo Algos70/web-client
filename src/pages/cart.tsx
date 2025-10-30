@@ -1,18 +1,23 @@
 import { ReactElement, useState } from "react";
 import Head from "next/head";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import {
   useUserCart,
   useRemoveItemFromCart,
   useClearCart,
+  useUpdateItemQuantity,
+  useDecreaseItemQuantity,
 } from "../lib/graphql/hooks";
 
 export default function CartPage() {
   const { data: cartData, loading, error } = useUserCart();
   const [removeItemFromCart] = useRemoveItemFromCart();
   const [clearCart] = useClearCart();
+  const [updateItemQuantity] = useUpdateItemQuantity();
+  const [decreaseItemQuantity] = useDecreaseItemQuantity();
   const [isClearing, setIsClearing] = useState(false);
+  const [updatingItems, setUpdatingItems] = useState<Set<string>>(new Set());
 
   const cart = cartData?.userCart;
   const items = cart?.items || [];
@@ -37,6 +42,50 @@ export default function CartPage() {
       console.error("Error clearing cart:", error);
     } finally {
       setIsClearing(false);
+    }
+  };
+
+  const handleIncreaseQuantity = async (productId: string, currentQty: number) => {
+    setUpdatingItems(prev => new Set(prev).add(productId));
+    try {
+      await updateItemQuantity({
+        variables: {
+          input: {
+            productId,
+            quantity: currentQty + 1
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+    } finally {
+      setUpdatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleDecreaseQuantity = async (productId: string, currentQty: number) => {
+    setUpdatingItems(prev => new Set(prev).add(productId));
+    try {
+      await decreaseItemQuantity({
+        variables: {
+          input: {
+            productId,
+            decreaseBy: 1
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error decreasing item quantity:', error);
+    } finally {
+      setUpdatingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(productId);
+        return newSet;
+      });
     }
   };
 
@@ -104,7 +153,7 @@ export default function CartPage() {
             <button
               onClick={handleClearCart}
               disabled={isClearing}
-              className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
+              className="text-red-600 hover:text-red-800 hover:cursor-pointer text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isClearing ? "Clearing..." : "Clear Cart"}
             </button>
@@ -136,7 +185,7 @@ export default function CartPage() {
             </p>
             <a
               href="/products"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 hover:cursor-pointer"
             >
               Continue Shopping
             </a>
@@ -154,9 +203,11 @@ export default function CartPage() {
                             <h3 className="text-lg font-medium text-slate-900">
                               {item.product.name}
                             </h3>
-                            <p className="text-sm text-slate-500">
-                              {item.product.category.name}
-                            </p>
+                            {item.product.category && (
+                              <p className="text-sm text-slate-500">
+                                {item.product.category.name}
+                              </p>
+                            )}
                             <p className="text-lg font-semibold text-slate-900 mt-1">
                               {formatPrice(
                                 item.product.priceMinor,
@@ -166,10 +217,28 @@ export default function CartPage() {
                           </div>
                           <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2">
-                              <span className="text-sm text-slate-600">
-                                Qty:
-                              </span>
-                              <span className="font-medium">{item.qty}</span>
+                              <span className="text-sm text-slate-600">Qty:</span>
+                              <div className="flex items-center space-x-1">
+                                <button
+                                  onClick={() => handleDecreaseQuantity(item.product.id, item.qty)}
+                                  disabled={updatingItems.has(item.product.id)}
+                                  className="p-1 rounded-md border border-slate-300 hover:bg-slate-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                  title="Decrease quantity"
+                                >
+                                  <MinusIcon className="h-4 w-4" />
+                                </button>
+                                <span className="font-medium min-w-[2rem] text-center">
+                                  {updatingItems.has(item.product.id) ? "..." : item.qty}
+                                </span>
+                                <button
+                                  onClick={() => handleIncreaseQuantity(item.product.id, item.qty)}
+                                  disabled={updatingItems.has(item.product.id)}
+                                  className="p-1 rounded-md border border-slate-300 hover:bg-slate-50 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                  title="Increase quantity"
+                                >
+                                  <PlusIcon className="h-4 w-4" />
+                                </button>
+                              </div>
                             </div>
                             <div className="text-right">
                               <p className="text-lg font-semibold text-slate-900">
@@ -179,13 +248,7 @@ export default function CartPage() {
                                 )}
                               </p>
                             </div>
-                            <button
-                              onClick={() => handleRemoveItem(item.product.id)}
-                              className="text-red-600 hover:text-red-800 p-1"
-                              title="Remove item"
-                            >
-                              <TrashIcon className="h-5 w-5" />
-                            </button>
+
                           </div>
                         </div>
                       </div>
@@ -205,7 +268,7 @@ export default function CartPage() {
                   )}
                 </span>
               </div>
-              <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 transition-colors">
+              <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 hover:cursor-pointer transition-colors">
                 Proceed to Checkout
               </button>
             </div>

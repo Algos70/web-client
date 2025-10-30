@@ -170,3 +170,13 @@ export interface AddItemToCartInput {
 export interface UpdateCartItemInput {
   qty: number;
 }
+
+export interface UpdateItemQuantityInput {
+  productId: string;
+  quantity: number;
+}
+
+export interface DecreaseItemQuantityInput {
+  productId: string;
+  decreaseBy?: number;
+}

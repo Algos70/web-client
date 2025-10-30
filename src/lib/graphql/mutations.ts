@@ -199,3 +199,61 @@ export const CLEAR_CART = gql`
     }
   }
 `;
+
+export const UPDATE_ITEM_QUANTITY = gql`
+  mutation UpdateItemQuantity($input: UpdateItemQuantityInput!) {
+    updateItemQuantity(input: $input) {
+      id
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const DECREASE_ITEM_QUANTITY = gql`
+  mutation DecreaseItemQuantity($input: DecreaseItemQuantityInput!) {
+    decreaseItemQuantity(input: $input) {
+      id
+      items {
+        id
+        qty
+        createdAt
+        updatedAt
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

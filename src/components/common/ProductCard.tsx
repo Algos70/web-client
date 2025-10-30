@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { Product } from "../../lib/graphql/types";
+import { useAddItemToCart } from "../../lib/graphql/hooks";
 
 interface ProductCardProps {
   product: Product;
@@ -7,6 +8,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
+  const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
   
   const formatPrice = (priceMinor: number, currency: string) => {
     const price = priceMinor / 100;
@@ -18,6 +20,22 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const handleCardClick = () => {
     router.push(`/product/${product.slug}`);
+  };
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await addItemToCart({
+        variables: {
+          input: {
+            productId: product.id,
+            quantity: 1
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+    }
   };
 
   return (
@@ -45,13 +63,15 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={product.stockQty === 0}
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent card click when button is clicked
-              // Add to cart logic here
-            }}
+            disabled={product.stockQty === 0 || addingToCart}
+            onClick={handleAddToCart}
           >
-            {product.stockQty === 0 ? "Out of Stock" : "Add to Cart"}
+            {product.stockQty === 0 
+              ? "Out of Stock" 
+              : addingToCart 
+                ? "Adding..." 
+                : "Add to Cart"
+            }
           </button>
         </div>
         {product.stockQty > 0 && product.stockQty <= 5 && (

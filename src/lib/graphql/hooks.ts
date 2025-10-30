@@ -30,6 +30,8 @@ import {
   ADD_ITEM_TO_CART,
   REMOVE_ITEM_FROM_CART,
   CLEAR_CART,
+  UPDATE_ITEM_QUANTITY,
+  DECREASE_ITEM_QUANTITY,
 } from "./mutations";
 import type { 
   Category, 
@@ -45,7 +47,9 @@ import type {
   StockCheckResult,
   ProductAvailability,
   Cart,
-  AddItemToCartInput
+  AddItemToCartInput,
+  UpdateItemQuantityInput,
+  DecreaseItemQuantityInput
 } from "./types";
 
 // Custom hooks for Category queries
@@ -226,6 +230,18 @@ export const useRemoveItemFromCart = () => {
 
 export const useClearCart = () => {
   return useMutation<{ clearCart: Cart }>(CLEAR_CART, {
+    refetchQueries: [{ query: GET_USER_CART }],
+  });
+};
+
+export const useUpdateItemQuantity = () => {
+  return useMutation<{ updateItemQuantity: Cart }, { input: UpdateItemQuantityInput }>(UPDATE_ITEM_QUANTITY, {
+    refetchQueries: [{ query: GET_USER_CART }],
+  });
+};
+
+export const useDecreaseItemQuantity = () => {
+  return useMutation<{ decreaseItemQuantity: Cart }, { input: DecreaseItemQuantityInput }>(DECREASE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],
   });
 };
