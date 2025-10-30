@@ -69,7 +69,10 @@ export const WALLET_MUTATIONS = {
 
   // Increase balance of user's own wallet
   INCREASE_USER_WALLET_BALANCE: gql`
-    mutation IncreaseUserWalletBalance($walletId: ID!, $input: BalanceOperationInput!) {
+    mutation IncreaseUserWalletBalance(
+      $walletId: ID!
+      $input: BalanceOperationInput!
+    ) {
       increaseUserWalletBalance(walletId: $walletId, input: $input) {
         id
         currency
@@ -145,7 +148,11 @@ export const walletOperations = {
     variables: { walletId },
   }),
 
-  transferFromUserWallet: (toWalletId: string, currency: string, amountMinor: string) => ({
+  transferFromUserWallet: (
+    toWalletId: string,
+    currency: string,
+    amountMinor: string
+  ) => ({
     mutation: WALLET_MUTATIONS.TRANSFER_FROM_USER_WALLET,
     variables: {
       input: {
