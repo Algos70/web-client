@@ -62,7 +62,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {formatPrice(product.priceMinor, product.currency)}
           </span>
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={product.stockQty === 0 || addingToCart}
             onClick={handleAddToCart}
           >
