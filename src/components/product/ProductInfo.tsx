@@ -23,11 +23,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </span>
       )}
       
-      <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      <h1 className="text-xl font-bold text-gray-900 mb-2">
         {product.name}
       </h1>
 
-      <div className="text-4xl font-bold text-gray-900 mb-6">
+      <div className="text-xl font-bold text-gray-900 mb-3">
         {formatPrice(product.priceMinor, product.currency)}
       </div>
 
@@ -35,7 +35,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Add to Cart Button */}
       <button
-        className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-semibold py-4 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+        className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-sm"
         disabled={product.stockQty === 0}
         onClick={() => {
           // Add to cart logic here

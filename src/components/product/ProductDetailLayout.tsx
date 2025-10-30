@@ -8,8 +8,8 @@ interface ProductDetailLayoutProps {
 
 export default function ProductDetailLayout({ product }: ProductDetailLayoutProps) {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
         <ProductImage productName={product.name} />
         <ProductInfo product={product} />
       </div>
