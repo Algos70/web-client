@@ -109,15 +109,6 @@ export const extractSlug = (context: GetServerSidePropsContext) => ({
   slug: context.params?.slug as string,
 });
 
-export const extractPagination = (context: GetServerSidePropsContext) => ({
-  page: parseInt(context.query.page as string) || 1,
-  limit: 10,
-});
-
-export const extractSearch = (context: GetServerSidePropsContext) => ({
-  search: context.query.search as string,
-});
-
 export const extractCategoryPagination = (
   context: GetServerSidePropsContext
 ) => ({
