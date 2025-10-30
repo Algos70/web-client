@@ -11,7 +11,11 @@ interface CategoriesQueryResponse {
   categories: CategoryConnection;
 }
 
-export default function CategoriesSection() {
+interface CategoriesSectionProps {
+  initialData?: CategoryConnection;
+}
+
+export default function CategoriesSection({ initialData }: CategoriesSectionProps) {
   const { data, loading, error } = useQuery<CategoriesQueryResponse>(
     GET_CATEGORIES,
     {
@@ -19,11 +23,15 @@ export default function CategoriesSection() {
         page: 1,
         limit: 6, // Show 6 categories on homepage
       },
+      skip: !!initialData,
     }
   );
 
-  // Loading state
-  if (loading) {
+  // Use SSR data if available, otherwise use client data
+  const categoriesData = initialData || data?.categories;
+
+  // Loading state (only if no SSR data)
+  if (loading && !initialData) {
     return (
       <section id="categories" className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,8 +45,8 @@ export default function CategoriesSection() {
     );
   }
 
-  // Error state
-  if (error) {
+  // Error state (only if no SSR data)
+  if (error && !initialData) {
     console.error("Categories fetch error:", error);
     return (
       <section id="categories" className="py-16 bg-white">
@@ -56,7 +64,7 @@ export default function CategoriesSection() {
     );
   }
 
-  const displayCategories = data?.categories?.categories || [];
+  const displayCategories = categoriesData?.categories || [];
 
   return (
     <section id="categories" className="py-16 bg-white">

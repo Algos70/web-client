@@ -211,9 +211,10 @@ export const useProductAvailability = (id: string, qty: number = 1) => {
   });
 };
 
-export const useFeaturedProducts = (limit: number = 8) => {
+export const useFeaturedProducts = (limit: number = 8, options?: { skip?: boolean }) => {
   return useQuery<{ featuredProducts: ProductConnection }>(GET_FEATURED_PRODUCTS, {
     variables: { limit },
+    skip: options?.skip,
   });
 };
 

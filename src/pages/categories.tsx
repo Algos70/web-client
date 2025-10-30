@@ -10,9 +10,14 @@ import ErrorPage from "../components/common/ErrorPage";
 import { getCategoriesBreadcrumbs } from "../lib/utils/breadcrumbHelpers";
 import { GET_CATEGORIES } from "../lib/graphql/queries";
 import { CategoryConnection } from "../lib/graphql/types";
+import { createSSRHandler, extractCategoryFilters } from "../lib/utils/ssr";
 
 interface CategoriesQueryResponse {
   categories: CategoryConnection;
+}
+
+interface CategoriesPageProps {
+  categoriesData?: CategoryConnection;
 }
 
 // Helper functions from CategoriesSection
@@ -97,7 +102,7 @@ function getCategoryIcon(categoryName: string): string {
   return '🛍️';
 }
 
-export default function CategoriesPage() {
+export default function CategoriesPage({ categoriesData: initialCategoriesData }: CategoriesPageProps) {
   const router = useRouter();
   const { page: pageParam, search } = router.query;
   const currentPage = parseInt(pageParam as string) || 1;
@@ -107,7 +112,8 @@ export default function CategoriesPage() {
       page: currentPage,
       limit: 10,
       search: search as string
-    }
+    },
+    skip: !!initialCategoriesData && currentPage === 1 && !search
   });
 
   if (loading) {
@@ -135,7 +141,9 @@ export default function CategoriesPage() {
     );
   }
 
-  const categoriesData = data?.categories;
+  // Use SSR data if conditions match, otherwise use client data
+  const shouldUseSSRData = !!initialCategoriesData && currentPage === 1 && !search;
+  const categoriesData = shouldUseSSRData ? initialCategoriesData : data?.categories;
   const categories = categoriesData?.categories || [];
   const pagination = categoriesData?.pagination;
 
@@ -227,3 +235,13 @@ CategoriesPage.getLayout = function getLayout(page: ReactElement) {
 };
 
 CategoriesPage.requireAuth = true;
+
+export const getServerSideProps = createSSRHandler({
+  queries: [
+    {
+      query: GET_CATEGORIES,
+      variables: extractCategoryFilters,
+    },
+  ],
+  skipAuthErrors: true, // Categories can be viewed without auth
+});

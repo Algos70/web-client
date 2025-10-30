@@ -5,7 +5,7 @@ import { Toaster } from "react-hot-toast";
 import { isPublicRoute } from "../lib/constants/routes";
 import AppLayout from "../components/layouts/AppLayout";
 import { ApolloProvider } from "@apollo/client/react";
-import {client} from "../lib/graphql/client"
+import { useApollo } from "../lib/graphql/client"
 import "../globals.css";
 
 // Page component with layout support
@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={useApollo(pageProps)}>
         <AppLayout requireAuth={requireAuth}>
           {getLayout(<Component {...pageProps} />)}
         </AppLayout>

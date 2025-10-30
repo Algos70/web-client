@@ -10,12 +10,17 @@ import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import ErrorPage from "../../components/common/ErrorPage";
 import { GET_CATEGORY_PRODUCTS } from "../../lib/graphql/queries";
 import { CategoryProductsResult } from "../../lib/graphql/types";
+import { createSSRHandler, extractCategoryPagination } from "../../lib/utils/ssr";
 
 interface CategoryProductsQueryResponse {
   categoryProducts: CategoryProductsResult;
 }
 
-export default function CategoryPage() {
+interface CategoryPageProps {
+  categoryProductsData?: CategoryProductsResult;
+}
+
+export default function CategoryPage({ categoryProductsData: initialCategoryData }: CategoryPageProps) {
   const router = useRouter();
   const { slug, page: pageParam } = router.query;
   const currentPage = parseInt(pageParam as string) || 1;
@@ -29,7 +34,7 @@ export default function CategoryPage() {
         limit: 5, // Reduced to test pagination
         inStockOnly: true,
       },
-      skip: !slug,
+      skip: !slug || (!!initialCategoryData && currentPage === 1),
     }
   );
 
@@ -58,7 +63,9 @@ export default function CategoryPage() {
     );
   }
 
-  const categoryData = data?.categoryProducts;
+  // Use SSR data if conditions match, otherwise use client data
+  const shouldUseSSRData = !!initialCategoryData && currentPage === 1;
+  const categoryData = shouldUseSSRData ? initialCategoryData : data?.categoryProducts;
   const category = categoryData?.category;
   const products = categoryData?.products || [];
   const pagination = categoryData?.pagination;
@@ -94,3 +101,14 @@ CategoryPage.getLayout = function getLayout(page: ReactElement) {
 };
 
 CategoryPage.requireAuth = true;
+
+export const getServerSideProps = createSSRHandler({
+  queries: [
+    {
+      query: GET_CATEGORY_PRODUCTS,
+      variables: extractCategoryPagination,
+      required: true,
+    },
+  ],
+  skipAuthErrors: true, // Category products can be viewed without auth
+});

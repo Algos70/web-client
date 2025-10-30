@@ -7,20 +7,27 @@ import { useRouter } from "next/router";
 
 interface FeaturedProductsProps {
   limit?: number;
+  initialData?: any; // SSR data
 }
 
-export default function FeaturedProducts({ limit = 8 }: FeaturedProductsProps) {
-  const { data, loading, error } = useFeaturedProducts(limit);
+export default function FeaturedProducts({ limit = 8, initialData }: FeaturedProductsProps) {
+  // Skip client-side query if we have SSR data
+  const { data, loading, error } = useFeaturedProducts(limit, {
+    skip: !!initialData
+  });
   const router = useRouter();
 
   const sectionTitle = "Products";
   const sectionSubtitle = "";
 
-  if (loading) {
+  // Use SSR data if available, otherwise use client data
+  const featuredProductsData = initialData || data?.featuredProducts;
+
+  if (loading && !initialData) {
     return <LoadingSection title={sectionTitle} subtitle={sectionSubtitle} />;
   }
 
-  if (error) {
+  if (error && !initialData) {
     console.error("Error loading featured products:", error);
     return (
       <ErrorSection
@@ -31,7 +38,7 @@ export default function FeaturedProducts({ limit = 8 }: FeaturedProductsProps) {
     );
   }
 
-  const displayProducts = data?.featuredProducts?.products || [];
+  const displayProducts = featuredProductsData?.products || [];
 
   return (
     <section id="products" className="py-16 bg-gray-50">

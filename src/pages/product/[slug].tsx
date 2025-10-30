@@ -8,12 +8,17 @@ import ProductDetailLayout from "../../components/product/ProductDetailLayout";
 import ErrorPage from "../../components/common/ErrorPage";
 import { GET_PRODUCT_BY_SLUG } from "../../lib/graphql/queries";
 import { Product } from "../../lib/graphql/types";
+import { createSSRHandler, extractSlug } from "../../lib/utils/ssr";
 
 interface ProductQueryResponse {
   productBySlug: Product;
 }
 
-export default function ProductDetailPage() {
+interface ProductDetailPageProps {
+  productBySlugData?: Product;
+}
+
+export default function ProductDetailPage({ productBySlugData: initialProduct }: ProductDetailPageProps) {
   const router = useRouter();
   const { slug } = router.query;
 
@@ -23,7 +28,7 @@ export default function ProductDetailPage() {
       variables: {
         slug: slug as string,
       },
-      skip: !slug,
+      skip: !slug || !!initialProduct,
     }
   );
 
@@ -70,7 +75,7 @@ export default function ProductDetailPage() {
     );
   }
 
-  const product = data?.productBySlug;
+  const product = initialProduct || data?.productBySlug;
 
   if (!product) {
     return (
@@ -107,3 +112,14 @@ ProductDetailPage.getLayout = function getLayout(page: ReactElement) {
 };
 
 ProductDetailPage.requireAuth = true;
+
+export const getServerSideProps = createSSRHandler({
+  queries: [
+    {
+      query: GET_PRODUCT_BY_SLUG,
+      variables: extractSlug,
+      required: true,
+    },
+  ],
+  skipAuthErrors: true, // Product details can be viewed without auth
+});
