@@ -1,12 +1,13 @@
 import React, { useState, ReactElement } from "react";
 import Head from "next/head";
+import toast from "react-hot-toast";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import WalletPageHeader from "../components/wallet/WalletPageHeader";
 import CreateWalletModal from "../components/wallet/CreateWalletModal";
 import AddFundsModal from "../components/wallet/AddFundsModal";
 import WalletGrid from "../components/wallet/WalletGrid";
 import EmptyWalletState from "../components/wallet/EmptyWalletState";
-import ToastNotification from "../components/wallet/ToastNotification";
+
 import DeleteConfirmationModal from "../components/admin/modals/DeleteConfirmationModal";
 import {
   useUserWallets,
@@ -22,25 +23,15 @@ export default function MyWalletsPage() {
     null
   );
   const [addFundsAmount, setAddFundsAmount] = useState("");
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
-  const [deleteModal, setDeleteModal] = useState<{ 
-    isOpen: boolean; 
-    walletId: string; 
-    walletCurrency: string 
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    walletId: string;
+    walletCurrency: string;
   }>({
     isOpen: false,
-    walletId: '',
-    walletCurrency: ''
+    walletId: "",
+    walletCurrency: "",
   });
-
-  // Toast function
-  const showToast = (message: string, type: "success" | "error") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
 
   // Queries and Mutations
   const {
@@ -56,42 +47,88 @@ export default function MyWalletsPage() {
   const handleCreateWallet = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createUserWallet({
+      const result = await createUserWallet({
         variables: {
           input: {
             currency: newWalletCurrency,
             initialBalance: 0,
           },
         },
+        errorPolicy: "all",
       });
-      setShowCreateForm(false);
-      setNewWalletCurrency("USD");
-      showToast("Wallet created successfully!", "success");
-    } catch (error) {
+
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("Failed to create wallet");
+        }
+      } else {
+        setShowCreateForm(false);
+        setNewWalletCurrency("USD");
+        toast.success("Wallet created successfully!");
+      }
+    } catch (error: any) {
       console.error("Error creating wallet:", error);
-      showToast("Failed to create wallet", "error");
+
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("Failed to create wallet");
+      }
     }
   };
 
   const handleDeleteWallet = (walletId: string) => {
-    const wallet = wallets.find(w => w.id === walletId);
+    const wallet = wallets.find((w) => w.id === walletId);
     setDeleteModal({
       isOpen: true,
       walletId,
-      walletCurrency: wallet?.currency || ''
+      walletCurrency: wallet?.currency || "",
     });
   };
 
   const confirmDeleteWallet = async () => {
     try {
-      await deleteUserWallet({
+      const result = await deleteUserWallet({
         variables: { walletId: deleteModal.walletId },
+        errorPolicy: "all",
       });
-      setDeleteModal({ isOpen: false, walletId: '', walletCurrency: '' });
-      showToast("Wallet deleted successfully!", "success");
-    } catch (error) {
+
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("Failed to delete wallet");
+        }
+        // Close modal on error
+        setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
+      } else {
+        setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
+        toast.success("Wallet deleted successfully!");
+      }
+    } catch (error: any) {
       console.error("Error deleting wallet:", error);
-      showToast("Failed to delete wallet", "error");
+
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("Failed to delete wallet");
+      }
+      // Close modal on error
+      setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
     }
   };
 
@@ -106,26 +143,47 @@ export default function MyWalletsPage() {
 
     try {
       const amountMinor = Math.round(parseFloat(addFundsAmount) * 100); // Convert to minor units
-      await increaseUserWalletBalance({
+      const result = await increaseUserWalletBalance({
         variables: {
           walletId: showAddFundsModal,
           input: {
             amountMinor,
           },
         },
+        errorPolicy: "all",
       });
-      setShowAddFundsModal(null);
-      setAddFundsAmount("");
-      showToast("Funds added successfully!", "success");
-    } catch (error) {
+
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("Failed to add funds");
+        }
+      } else {
+        setShowAddFundsModal(null);
+        setAddFundsAmount("");
+        toast.success("Funds added successfully!");
+      }
+    } catch (error: any) {
       console.error("Error adding funds:", error);
-      showToast("Failed to add funds", "error");
+
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("Failed to add funds");
+      }
     }
   };
 
   const handleTransfer = (walletId: string) => {
     // TODO: Implement transfer modal
-    showToast("Transfer functionality will be implemented soon", "success");
+    toast.success("Transfer functionality will be implemented soon");
   };
 
   if (walletsLoading) {
@@ -210,7 +268,7 @@ export default function MyWalletsPage() {
         </div>
       </div>
 
-      <ToastNotification toast={toast} />
+
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
@@ -220,7 +278,9 @@ export default function MyWalletsPage() {
         itemType="wallet"
         warningMessage="All funds in this wallet will be lost permanently."
         onConfirm={confirmDeleteWallet}
-        onCancel={() => setDeleteModal({ isOpen: false, walletId: '', walletCurrency: '' })}
+        onCancel={() =>
+          setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" })
+        }
         loading={deleteLoading}
       />
     </>
