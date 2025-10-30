@@ -16,6 +16,9 @@ import {
   GET_FEATURED_PRODUCTS,
   SEARCH_PRODUCTS,
   GET_USER_CART,
+  GET_USER_WALLETS,
+  GET_USER_WALLET_BY_CURRENCY,
+  GET_USER_WALLET_BALANCE,
 } from "./queries";
 import {
   CREATE_CATEGORY,
@@ -32,6 +35,10 @@ import {
   CLEAR_CART,
   UPDATE_ITEM_QUANTITY,
   DECREASE_ITEM_QUANTITY,
+  CREATE_USER_WALLET,
+  INCREASE_USER_WALLET_BALANCE,
+  DELETE_USER_WALLET,
+  TRANSFER_FROM_USER_WALLET,
 } from "./mutations";
 import type { 
   Category, 
@@ -49,7 +56,13 @@ import type {
   Cart,
   AddItemToCartInput,
   UpdateItemQuantityInput,
-  DecreaseItemQuantityInput
+  DecreaseItemQuantityInput,
+  Wallet,
+  BalanceResponse,
+  TransferResponse,
+  CreateUserWalletInput,
+  BalanceOperationInput,
+  UserTransferInput
 } from "./types";
 
 // Custom hooks for Category queries
@@ -243,5 +256,48 @@ export const useUpdateItemQuantity = () => {
 export const useDecreaseItemQuantity = () => {
   return useMutation<{ decreaseItemQuantity: Cart }, { input: DecreaseItemQuantityInput }>(DECREASE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],
+  });
+};
+
+// Wallet hooks
+export const useUserWallets = () => {
+  return useQuery<{ userWallets: Wallet[] }>(GET_USER_WALLETS);
+};
+
+export const useUserWalletByCurrency = (currency: string) => {
+  return useQuery<{ userWalletByCurrency: Wallet | null }>(GET_USER_WALLET_BY_CURRENCY, {
+    variables: { currency },
+    skip: !currency,
+  });
+};
+
+export const useUserWalletBalance = (currency: string) => {
+  return useQuery<{ userWalletBalance: BalanceResponse }>(GET_USER_WALLET_BALANCE, {
+    variables: { currency },
+    skip: !currency,
+  });
+};
+
+export const useCreateUserWallet = () => {
+  return useMutation<{ createUserWallet: Wallet }, { input: CreateUserWalletInput }>(CREATE_USER_WALLET, {
+    refetchQueries: [{ query: GET_USER_WALLETS }],
+  });
+};
+
+export const useIncreaseUserWalletBalance = () => {
+  return useMutation<{ increaseUserWalletBalance: Wallet }, { walletId: string; input: BalanceOperationInput }>(INCREASE_USER_WALLET_BALANCE, {
+    refetchQueries: [{ query: GET_USER_WALLETS }],
+  });
+};
+
+export const useDeleteUserWallet = () => {
+  return useMutation<{ deleteUserWallet: boolean }, { walletId: string }>(DELETE_USER_WALLET, {
+    refetchQueries: [{ query: GET_USER_WALLETS }],
+  });
+};
+
+export const useTransferFromUserWallet = () => {
+  return useMutation<{ transferFromUserWallet: TransferResponse }, { input: UserTransferInput }>(TRANSFER_FROM_USER_WALLET, {
+    refetchQueries: [{ query: GET_USER_WALLETS }],
   });
 };

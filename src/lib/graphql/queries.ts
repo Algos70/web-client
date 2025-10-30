@@ -479,7 +479,49 @@ export const GET_USER_CART = gql`
   }
 `;
 
+// Wallet Queries
+export const GET_USER_WALLETS = gql`
+  query GetUserWallets {
+    userWallets {
+      id
+      currency
+      balanceMinor
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const GET_USER_WALLET_BY_CURRENCY = gql`
+  query GetUserWalletByCurrency($currency: String!) {
+    userWalletByCurrency(currency: $currency) {
+      id
+      currency
+      balanceMinor
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const GET_USER_WALLET_BALANCE = gql`
+  query GetUserWalletBalance($currency: String!) {
+    userWalletBalance(currency: $currency) {
+      balance
+      currency
+      userId
+    }
+  }
+`;
+
 // TODO: Add other queries when schemas are provided
 // - User queries
 // - Order queries
-// - Wallet queries

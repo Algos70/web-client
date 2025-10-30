@@ -257,3 +257,51 @@ export const DECREASE_ITEM_QUANTITY = gql`
     }
   }
 `;
+
+// Wallet Mutations
+export const CREATE_USER_WALLET = gql`
+  mutation CreateUserWallet($input: CreateUserWalletInput!) {
+    createUserWallet(input: $input) {
+      id
+      currency
+      balanceMinor
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const INCREASE_USER_WALLET_BALANCE = gql`
+  mutation IncreaseUserWalletBalance($walletId: ID!, $input: BalanceOperationInput!) {
+    increaseUserWalletBalance(walletId: $walletId, input: $input) {
+      id
+      currency
+      balanceMinor
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+    }
+  }
+`;
+
+export const DELETE_USER_WALLET = gql`
+  mutation DeleteUserWallet($walletId: ID!) {
+    deleteUserWallet(walletId: $walletId)
+  }
+`;
+
+export const TRANSFER_FROM_USER_WALLET = gql`
+  mutation TransferFromUserWallet($input: UserTransferInput!) {
+    transferFromUserWallet(input: $input) {
+      success
+      message
+    }
+  }
+`;

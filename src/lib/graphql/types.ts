@@ -180,3 +180,58 @@ export interface DecreaseItemQuantityInput {
   productId: string;
   decreaseBy?: number;
 }
+
+// Wallet Types
+export interface Wallet {
+  id: string;
+  currency: string;
+  balanceMinor: number;
+  user: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WalletConnection {
+  wallets: Wallet[];
+  pagination: Pagination;
+}
+
+export interface BalanceResponse {
+  balance: number;
+  currency: string;
+  userId: string;
+}
+
+export interface TransferResponse {
+  success: boolean;
+  message: string;
+}
+
+// Wallet Input Types
+export interface CreateWalletInput {
+  userId: string;
+  currency: string;
+  initialBalance?: number;
+}
+
+export interface BalanceOperationInput {
+  amountMinor: number;
+}
+
+export interface TransferInput {
+  fromUserId: string;
+  toUserId: string;
+  currency: string;
+  amountMinor: number;
+}
+
+export interface CreateUserWalletInput {
+  currency: string;
+  initialBalance?: number;
+}
+
+export interface UserTransferInput {
+  toWalletId: string;
+  currency: string;
+  amountMinor: number;
+}
