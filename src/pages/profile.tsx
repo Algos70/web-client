@@ -150,7 +150,7 @@ export default function Profile() {
                               Order #{order.id.slice(-8)}
                             </h3>
                             <p className="text-sm text-slate-600">
-                              Placed on {new Date(order.createdAt).toLocaleDateString()}
+                              Placed on {new Date(parseInt(order.createdAt)).toLocaleDateString()}
                             </p>
                           </div>
                           <div className="text-right">
