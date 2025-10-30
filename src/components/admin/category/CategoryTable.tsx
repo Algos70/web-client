@@ -23,6 +23,43 @@ export default function CategoryTable({
   updating,
   deleting,
 }: CategoryTableProps) {
+  const formatDate = (dateString: string) => {
+    try {
+      if (!dateString) return "N/A";
+      
+      // Parse as timestamp (string to number)
+      const timestamp = parseInt(dateString);
+      
+      if (isNaN(timestamp)) {
+        // If not a number, try as ISO string
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+          return "Invalid Date";
+        }
+        return date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+      }
+      
+      // Create date from timestamp
+      const date = new Date(timestamp);
+      
+      if (isNaN(date.getTime())) {
+        return "Invalid Date";
+      }
+      
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.error("Date formatting error:", error, "for date:", dateString);
+      return "Invalid Date";
+    }
+  };
   return (
     <div className="bg-white rounded-lg border overflow-hidden">
       <table className="min-w-full">
@@ -70,7 +107,7 @@ export default function CategoryTable({
                 {category.products?.length || 0}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {new Date(category.createdAt).toLocaleDateString()}
+                {formatDate(category.createdAt)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 {editingCategory?.id === category.id ? null : (
