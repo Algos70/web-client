@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { Product } from "../../lib/graphql/types";
 import { useAddItemToCart } from "../../lib/graphql/hooks";
 
@@ -9,7 +10,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
-  
+
   const formatPrice = (priceMinor: number, currency: string) => {
     const price = priceMinor / 100;
     return new Intl.NumberFormat("en-US", {
@@ -25,21 +26,44 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await addItemToCart({
+      const result = await addItemToCart({
         variables: {
           input: {
             productId: product.id,
-            quantity: 1
-          }
-        }
+            quantity: 1,
+          },
+        },
+        errorPolicy: "all",
       });
-    } catch (error) {
-      console.error('Error adding item to cart:', error);
+
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("An error occurred while adding item to cart.");
+        }
+      } else {
+        toast.success("Product added to cart successfully!");
+      }
+    } catch (error: any) {
+      console.error("Error adding item to cart:", error);
+
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("An error occurred while adding item to cart.");
+      }
     }
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleCardClick}
     >
@@ -66,12 +90,11 @@ export default function ProductCard({ product }: ProductCardProps) {
             disabled={product.stockQty === 0 || addingToCart}
             onClick={handleAddToCart}
           >
-            {product.stockQty === 0 
-              ? "Out of Stock" 
-              : addingToCart 
-                ? "Adding..." 
-                : "Add to Cart"
-            }
+            {product.stockQty === 0
+              ? "Out of Stock"
+              : addingToCart
+              ? "Adding..."
+              : "Add to Cart"}
           </button>
         </div>
         {product.stockQty > 0 && product.stockQty <= 5 && (

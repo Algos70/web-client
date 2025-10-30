@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Product } from "../../lib/graphql/types";
 import { useAddItemToCart } from "../../lib/graphql/hooks";
 import ProductStock from "./ProductStock";
@@ -9,7 +10,7 @@ interface ProductInfoProps {
 
 export default function ProductInfo({ product }: ProductInfoProps) {
   const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
-  
+
   const formatPrice = (priceMinor: number, currency: string) => {
     const price = priceMinor / 100;
     return new Intl.NumberFormat("en-US", {
@@ -20,16 +21,39 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   const handleAddToCart = async () => {
     try {
-      await addItemToCart({
+      const result = await addItemToCart({
         variables: {
           input: {
             productId: product.id,
-            quantity: 1
-          }
-        }
+            quantity: 1,
+          },
+        },
+        errorPolicy: "all",
       });
-    } catch (error) {
-      console.error('Error adding item to cart:', error);
+
+      // Check if there are GraphQL errors in the result
+      if (result.error) {
+        const error = result.error as any;
+        if (error.errors && error.errors.length > 0) {
+          const errorMessage = error.errors[0].message;
+          toast.error(errorMessage);
+        } else if (error.networkError) {
+          toast.error("Network error occurred. Please try again.");
+        } else {
+          toast.error("An error occurred while adding item to cart.");
+        }
+      } else {
+        toast.success("Product added to cart successfully!");
+      }
+    } catch (error: any) {
+      console.error("Error adding item to cart:", error);
+
+      // Handle network errors or other unexpected errors
+      if (error.networkError) {
+        toast.error("Network error occurred. Please try again.");
+      } else {
+        toast.error("An error occurred while adding item to cart.");
+      }
     }
   };
 
@@ -40,10 +64,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           {product.category.name}
         </span>
       )}
-      
-      <h1 className="text-xl font-bold text-gray-900 mb-2">
-        {product.name}
-      </h1>
+
+      <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
 
       <div className="text-xl font-bold text-gray-900 mb-3">
         {formatPrice(product.priceMinor, product.currency)}
@@ -57,12 +79,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         disabled={product.stockQty === 0 || addingToCart}
         onClick={handleAddToCart}
       >
-        {product.stockQty === 0 
-          ? "Out of Stock" 
-          : addingToCart 
-            ? "Adding..." 
-            : "Add to Cart"
-        }
+        {product.stockQty === 0
+          ? "Out of Stock"
+          : addingToCart
+          ? "Adding..."
+          : "Add to Cart"}
       </button>
 
       <ProductDetails product={product} />

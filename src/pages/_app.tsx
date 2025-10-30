@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { Toaster } from "react-hot-toast";
 import { isPublicRoute } from "../lib/constants/routes";
 import AppLayout from "../components/layouts/AppLayout";
 import { ApolloProvider } from "@apollo/client/react";
@@ -39,6 +40,16 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
         <AppLayout requireAuth={requireAuth}>
           {getLayout(<Component {...pageProps} />)}
         </AppLayout>
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+          }}
+        />
       </ApolloProvider>
     </>
   );
