@@ -1,5 +1,6 @@
 import { ReactElement, useState } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { PlusIcon, MinusIcon } from "@heroicons/react/24/outline";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import ClearCartModal from "../components/modal/ClearCartModal";
@@ -13,6 +14,7 @@ import {
 import { formatCurrency } from "../lib/utils/currency";
 
 export default function CartPage() {
+  const router = useRouter();
   const { data: cartData, loading, error } = useUserCart();
   const [removeItemFromCart] = useRemoveItemFromCart();
   const [clearCart] = useClearCart();
@@ -283,7 +285,10 @@ export default function CartPage() {
                   )}
                 </span>
               </div>
-              <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 hover:cursor-pointer transition-colors">
+              <button 
+                onClick={() => router.push('/payment')}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 hover:cursor-pointer transition-colors"
+              >
                 Proceed to Checkout
               </button>
             </div>

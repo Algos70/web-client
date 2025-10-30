@@ -522,6 +522,75 @@ export const GET_USER_WALLET_BALANCE = gql`
   }
 `;
 
-// TODO: Add other queries when schemas are provided
-// - User queries
-// - Order queries
+// Order Queries
+export const GET_USER_ORDERS = gql`
+  query GetUserOrders {
+    userOrders {
+      id
+      totalMinor
+      currency
+      status
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        unitPriceMinor
+        currency
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_USER_ORDER = gql`
+  query GetUserOrder($id: ID!) {
+    userOrder(id: $id) {
+      id
+      totalMinor
+      currency
+      status
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        unitPriceMinor
+        currency
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+`;

@@ -247,3 +247,29 @@ export interface CreateOrderItemForOrderInput {
   unitPriceMinor: string;
   currency: string;
 }
+export interface CreateOrderFromCartInput {
+  walletId: string;
+}
+
+export interface CreateOrderInput {
+  userId: string;
+  totalMinor: number;
+  currency: string;
+  status?: string;
+  items: CreateOrderItemForOrderInput[];
+}
+
+export interface UpdateOrderInput {
+  totalMinor?: number;
+  currency?: string;
+  status?: string;
+}
+
+export interface UpdateOrderStatusInput {
+  status: string;
+}
+
+export interface OrderConnection {
+  orders: Order[];
+  pagination: Pagination;
+}

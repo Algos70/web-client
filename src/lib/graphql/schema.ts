@@ -226,4 +226,76 @@ const cartTypeDefs = `
   }
 `;
 
-export const typeDefs = [baseTypeDefs, productTypeDefs, cartTypeDefs];
+// GraphQL type definitions for Order
+const orderTypeDefs = `
+  type Order {
+    id: ID!
+    totalMinor: String!
+    currency: String!
+    status: String!
+    createdAt: String!
+    updatedAt: String!
+    user: User!
+    items: [OrderItem!]!
+  }
+
+  type OrderItem {
+    id: ID!
+    product: Product!
+    qty: Int!
+    unitPriceMinor: String!
+    currency: String!
+  }
+
+  type OrderConnection {
+    orders: [Order!]!
+    pagination: Pagination!
+  }
+
+  input CreateOrderFromCartInput {
+    walletId: ID!
+  }
+
+  input CreateOrderInput {
+    userId: ID!
+    totalMinor: Int!
+    currency: String!
+    status: String
+    items: [CreateOrderItemForOrderInput!]!
+  }
+
+  input CreateOrderItemForOrderInput {
+    productId: ID!
+    qty: Int!
+    unitPriceMinor: String!
+    currency: String!
+  }
+
+  input UpdateOrderInput {
+    totalMinor: Int
+    currency: String
+    status: String
+  }
+
+  input UpdateOrderStatusInput {
+    status: String!
+  }
+
+  extend type Query {
+    # User Order Queries
+    userOrders: [Order!]!
+    userOrder(id: ID!): Order!
+  }
+
+  extend type Mutation {
+    # User Order Mutations
+    createOrderFromCart(input: CreateOrderFromCartInput!): Order!
+  }
+`;
+
+export const typeDefs = [
+  baseTypeDefs,
+  productTypeDefs,
+  cartTypeDefs,
+  orderTypeDefs,
+];

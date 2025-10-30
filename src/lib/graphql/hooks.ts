@@ -19,6 +19,8 @@ import {
   GET_USER_WALLETS,
   GET_USER_WALLET_BY_CURRENCY,
   GET_USER_WALLET_BALANCE,
+  GET_USER_ORDERS,
+  GET_USER_ORDER,
 } from "./queries";
 import {
   CREATE_CATEGORY,
@@ -39,6 +41,7 @@ import {
   INCREASE_USER_WALLET_BALANCE,
   DELETE_USER_WALLET,
   TRANSFER_FROM_USER_WALLET,
+  CREATE_ORDER_FROM_CART,
 } from "./mutations";
 import type { 
   Category, 
@@ -62,7 +65,9 @@ import type {
   TransferResponse,
   CreateUserWalletInput,
   BalanceOperationInput,
-  UserTransferInput
+  UserTransferInput,
+  Order,
+  CreateOrderFromCartInput
 } from "./types";
 
 // Custom hooks for Category queries
@@ -299,5 +304,22 @@ export const useDeleteUserWallet = () => {
 export const useTransferFromUserWallet = () => {
   return useMutation<{ transferFromUserWallet: TransferResponse }, { input: UserTransferInput }>(TRANSFER_FROM_USER_WALLET, {
     refetchQueries: [{ query: GET_USER_WALLETS }],
+  });
+};
+// Order hooks
+export const useUserOrders = () => {
+  return useQuery<{ userOrders: Order[] }>(GET_USER_ORDERS);
+};
+
+export const useUserOrder = (id: string) => {
+  return useQuery<{ userOrder: Order }>(GET_USER_ORDER, {
+    variables: { id },
+    skip: !id,
+  });
+};
+
+export const useCreateOrderFromCart = () => {
+  return useMutation<{ createOrderFromCart: Order }, { input: CreateOrderFromCartInput }>(CREATE_ORDER_FROM_CART, {
+    refetchQueries: [{ query: GET_USER_CART }, { query: GET_USER_ORDERS }],
   });
 };

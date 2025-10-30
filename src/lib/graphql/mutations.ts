@@ -305,3 +305,39 @@ export const TRANSFER_FROM_USER_WALLET = gql`
     }
   }
 `;
+// Order Mutations
+export const CREATE_ORDER_FROM_CART = gql`
+  mutation CreateOrderFromCart($input: CreateOrderFromCartInput!) {
+    createOrderFromCart(input: $input) {
+      id
+      totalMinor
+      currency
+      status
+      createdAt
+      updatedAt
+      user {
+        id
+        email
+      }
+      items {
+        id
+        qty
+        unitPriceMinor
+        currency
+        product {
+          id
+          name
+          slug
+          priceMinor
+          currency
+          stockQty
+          category {
+            id
+            name
+            slug
+          }
+        }
+      }
+    }
+  }
+`;
