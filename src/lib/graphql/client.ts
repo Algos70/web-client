@@ -12,7 +12,6 @@ function createApolloClient(headers?: Record<string, string>) {
     process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ||
     `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/graphql`;
 
-
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
