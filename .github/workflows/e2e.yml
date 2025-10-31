@@ -1,0 +1,108 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    # Backend + DB + Redis ortamı
+    services:
+      backend:
+        image: ghcr.io/algos70/monolith-api:latest
+        ports:
+          - 4000:4000
+        env:
+          NODE_ENV: production
+          DB_HOST: postgres
+          DB_PORT: 5432
+          DB_USERNAME: app
+          DB_PASSWORD: app
+          DB_DATABASE: shop
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
+          KEYCLOAK_BASE_URL: http://keycloak:8080/
+          KEYCLOAK_REALM: shop
+          KEYCLOAK_CLIENT_ID: monolith-api
+          KEYCLOAK_CLIENT_SECRET: nonDohtDwCWJAy5IUSszZ7Ac7SXoOYsb
+          FRONTEND_URL: http://localhost:3000
+        depends_on:
+          - postgres
+          - redis
+          - keycloak
+
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: shop
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+      keycloak-db:
+        image: postgres:18
+        env:
+          POSTGRES_DB: keycloak
+          POSTGRES_USER: keycloak
+          POSTGRES_PASSWORD: keycloak
+
+      keycloak:
+        image: quay.io/keycloak/keycloak:26.0
+        command: start-dev --import-realm
+        env:
+          KEYCLOAK_ADMIN: admin
+          KEYCLOAK_ADMIN_PASSWORD: admin
+          KC_DB: postgres
+          KC_DB_URL_HOST: keycloak-db
+          KC_DB_URL_DATABASE: keycloak
+          KC_DB_USERNAME: keycloak
+          KC_DB_PASSWORD: keycloak
+          KC_PROXY: edge
+        ports:
+          - 8080:8080
+        depends_on:
+          - keycloak-db
+        volumes:
+          - ./shop-realm.json:/opt/keycloak/data/import/shop-realm.json
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js project
+        run: npm run build
+
+      - name: Start frontend server
+        run: nohup npm run start &
+
+      - name: Wait for backend & frontend to start
+        run: npx wait-on http://localhost:3000 http://localhost:4000
+
+      - name: Run Playwright E2E tests
+        run: |
+          npx playwright install --with-deps
+          npm run test:e2e
