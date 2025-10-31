@@ -8,29 +8,38 @@ let apolloClient: any;
 
 // Unified Apollo Client creation with optional headers
 function createApolloClient(headers?: Record<string, string>) {
+  const graphqlUrl =
+    process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ||
+    `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/graphql`;
+
+
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
     link: new HttpLink({
-      uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
-      credentials: 'include',
+      uri: graphqlUrl,
+      credentials: "include",
       headers: headers || {}, // Support for custom headers (like cookies for SSR)
     }),
     cache: new InMemoryCache(),
   });
 }
 
-export function initializeApollo(initialState: any = null, headers?: Record<string, string>) {
+export function initializeApollo(
+  initialState: any = null,
+  headers?: Record<string, string>
+) {
   // For SSR, always create a new client with headers
   // For client-side, reuse existing client
-  const _apolloClient = (typeof window === "undefined" || headers) 
-    ? createApolloClient(headers)
-    : (apolloClient ?? createApolloClient());
+  const _apolloClient =
+    typeof window === "undefined" || headers
+      ? createApolloClient(headers)
+      : apolloClient ?? createApolloClient();
 
   if (initialState) {
     const existingCache = _apolloClient.extract();
     _apolloClient.cache.restore({ ...existingCache, ...initialState });
   }
-  
+
   if (typeof window === "undefined") return _apolloClient;
   if (!apolloClient) apolloClient = _apolloClient;
 

@@ -594,3 +594,20 @@ export const GET_USER_ORDER = gql`
     }
   }
 `;
+
+// Authentication Queries
+export const GET_ME = gql`
+  query GetMe {
+    me {
+      sub
+      email
+      preferred_username
+      name
+      given_name
+      family_name
+      email_verified
+      permissions
+      dbUserId
+    }
+  }
+`;

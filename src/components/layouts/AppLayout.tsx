@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '../../lib/hooks/useAuth';
+import { useAuth } from '../../lib/contexts/AuthContext';
 import { ROUTES } from '../../lib/constants/routes';
 import LoadingSpinner from '../auth/LoadingSpinner';
 import Header from '../layout/Header';
@@ -31,7 +31,7 @@ export default function AppLayout({ children, requireAuth = true }: AppLayoutPro
     return <LoadingSpinner />;
   }
 
-  const showHeaderFooter = router.pathname !== ROUTES.LOGIN;
+  const showHeaderFooter = router.pathname !== ROUTES.LOGIN && router.pathname !== ROUTES.REGISTER;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

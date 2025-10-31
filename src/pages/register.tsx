@@ -2,11 +2,11 @@ import { useAuth } from "../lib/contexts/AuthContext";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Head from "next/head";
-import LoginForm from "../components/auth/LoginForm";
+import RegisterForm from "../components/auth/RegisterForm";
 import { ROUTES } from "../lib/constants/routes";
 
-export default function Login() {
-  const { login, isAuthenticated, loading } = useAuth();
+export default function Register() {
+  const { register, isAuthenticated, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -15,15 +15,6 @@ export default function Login() {
       router.push(redirect);
     }
   }, [isAuthenticated, loading, router]);
-
-  const handleLogin = async (username: string, password: string) => {
-    const result = await login(username, password);
-    if (result.success) {
-      // Redirect will be handled by the useEffect above
-      return result;
-    }
-    return result;
-  };
 
   if (isAuthenticated) {
     return (
@@ -39,12 +30,12 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Giriş Yap - E-Ticaret Mağazası</title>
-        <meta name="description" content="Hesabınıza giriş yapın ve alışverişe başlayın." />
+        <title>Kayıt Ol - E-Ticaret Mağazası</title>
+        <meta name="description" content="Yeni hesap oluşturun ve alışverişe başlayın." />
       </Head>
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-          <LoginForm onLogin={handleLogin} />
+          <RegisterForm onRegister={register} />
         </div>
       </main>
     </>
@@ -52,4 +43,4 @@ export default function Login() {
 }
 
 // This page doesn't require authentication
-Login.requireAuth = false;
+Register.requireAuth = false;

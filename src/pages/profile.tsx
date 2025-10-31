@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect } from 'react';
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useAuth } from "../lib/hooks/useAuth";
+import { useAuth } from "../lib/contexts/AuthContext";
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import UserDashboard from "../components/auth/UserDashboard";
 import { useUserOrders } from "../lib/graphql/hooks";

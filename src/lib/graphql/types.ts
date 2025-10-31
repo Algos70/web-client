@@ -46,6 +46,49 @@ export interface User {
   updatedAt: string;
 }
 
+// Auth Types
+export interface AuthUser {
+  sub: string;
+  email: string;
+  preferred_username: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  email_verified: boolean;
+  permissions: string[];
+  dbUserId: string;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  message: string;
+  user: AuthUser;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface LogoutResponse {
+  success: boolean;
+  message: string;
+}
+
+// Auth Input Types
+export interface LoginInput {
+  username: string;
+  password: string;
+}
+
+export interface RegisterInput {
+  username: string;
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+}
+
 export interface Order {
   id: string;
   totalMinor: string;

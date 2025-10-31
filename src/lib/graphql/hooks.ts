@@ -21,6 +21,7 @@ import {
   GET_USER_WALLET_BALANCE,
   GET_USER_ORDERS,
   GET_USER_ORDER,
+  GET_ME,
 } from "./queries";
 import {
   CREATE_CATEGORY,
@@ -42,6 +43,10 @@ import {
   DELETE_USER_WALLET,
   TRANSFER_FROM_USER_WALLET,
   CREATE_ORDER_FROM_CART,
+  LOGIN,
+  REGISTER,
+  LOGOUT,
+  REFRESH_TOKEN,
 } from "./mutations";
 import type { 
   Category, 
@@ -67,7 +72,13 @@ import type {
   BalanceOperationInput,
   UserTransferInput,
   Order,
-  CreateOrderFromCartInput
+  CreateOrderFromCartInput,
+  AuthUser,
+  AuthResponse,
+  RegisterResponse,
+  LogoutResponse,
+  LoginInput,
+  RegisterInput
 } from "./types";
 
 // Custom hooks for Category queries
@@ -323,4 +334,27 @@ export const useCreateOrderFromCart = () => {
   return useMutation<{ createOrderFromCart: Order }, { input: CreateOrderFromCartInput }>(CREATE_ORDER_FROM_CART, {
     refetchQueries: [{ query: GET_USER_CART }, { query: GET_USER_ORDERS }],
   });
+};
+
+// Authentication hooks
+export const useMe = () => {
+  return useQuery<{ me: AuthUser }>(GET_ME, {
+    errorPolicy: 'ignore', // Ignore 401 errors for unauthenticated users
+  });
+};
+
+export const useLogin = () => {
+  return useMutation<{ login: AuthResponse }, { input: LoginInput }>(LOGIN);
+};
+
+export const useRegister = () => {
+  return useMutation<{ register: RegisterResponse }, { input: RegisterInput }>(REGISTER);
+};
+
+export const useLogout = () => {
+  return useMutation<{ logout: LogoutResponse }>(LOGOUT);
+};
+
+export const useRefreshToken = () => {
+  return useMutation<{ refreshToken: AuthResponse }>(REFRESH_TOKEN);
 };

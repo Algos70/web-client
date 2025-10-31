@@ -341,3 +341,62 @@ export const CREATE_ORDER_FROM_CART = gql`
     }
   }
 `;
+
+// Authentication Mutations
+export const LOGIN = gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      success
+      message
+      user {
+        sub
+        email
+        preferred_username
+        name
+        given_name
+        family_name
+        email_verified
+        permissions
+        dbUserId
+      }
+    }
+  }
+`;
+
+export const REGISTER = gql`
+  mutation Register($input: RegisterInput!) {
+    register(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation Logout {
+    logout {
+      success
+      message
+    }
+  }
+`;
+
+export const REFRESH_TOKEN = gql`
+  mutation RefreshToken {
+    refreshToken {
+      success
+      message
+      user {
+        sub
+        email
+        preferred_username
+        name
+        given_name
+        family_name
+        email_verified
+        permissions
+        dbUserId
+      }
+    }
+  }
+`;

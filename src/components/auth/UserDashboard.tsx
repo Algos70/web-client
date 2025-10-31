@@ -111,7 +111,8 @@ export default function UserDashboard({
           </label>
           <div className="flex flex-wrap gap-1.5">
             {user?.permissions
-              ?.sort()
+              ?.slice()
+              .sort()
               .map((permission: string, index: number) => (
                 <span
                   key={index}

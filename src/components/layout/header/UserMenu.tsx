@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../../../lib/hooks/useAuth';
+import { useAuth } from '../../../lib/contexts/AuthContext';
 import { useRouter } from 'next/router';
 import { ROUTES } from '../../../lib/constants/routes';
 import { hasPermission } from '../../../lib/utils/permissions';

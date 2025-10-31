@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useAuth } from "../lib/hooks/useAuth";
+import { useAuth } from "../lib/contexts/AuthContext";
 import { hasPermission } from "../lib/utils/permissions";
 import { ROUTES } from "../lib/constants/routes";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
