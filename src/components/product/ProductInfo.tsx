@@ -62,7 +62,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
 
-      <div className="text-xl font-bold text-gray-900 mb-3">
+      <div className="price text-xl font-bold text-gray-900 mb-3" id={product.currency}>
         {formatCurrency(product.priceMinor.toString(), product.currency)}
       </div>
 
@@ -70,6 +70,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Add to Cart Button */}
       <button
+        id={`add-to-cart-${product.slug}`}
         className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-sm"
         disabled={product.stockQty === 0 || addingToCart}
         onClick={handleAddToCart}

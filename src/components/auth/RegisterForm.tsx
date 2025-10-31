@@ -76,7 +76,7 @@ export default function RegisterForm({ onRegister }: RegisterFormProps) {
     return (
       <div className="text-center">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold gradient-text mb-3">Registration Successful!</h1>
+          <h1 id="register-success" className="text-3xl font-bold gradient-text mb-3">Registration Successful!</h1>
           <p className="text-slate-600 text-lg">Welcome to NoxCommerce</p>
         </div>
         

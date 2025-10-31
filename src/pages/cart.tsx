@@ -285,7 +285,8 @@ export default function CartPage() {
                   )}
                 </span>
               </div>
-              <button 
+              <button
+                id="checkout-button" 
                 onClick={() => router.push('/payment')}
                 className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 hover:cursor-pointer transition-colors"
               >

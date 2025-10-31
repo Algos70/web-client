@@ -16,6 +16,7 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <UserMenu />
             <Link
+              id="cart-button"
               href="/cart"
               className="relative p-2 text-slate-600 hover:text-slate-900 transition-colors"
             >

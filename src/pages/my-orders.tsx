@@ -105,7 +105,7 @@ export default function MyOrders() {
               ) : (
                 <div className="space-y-4">
                   {orders.map((order) => (
-                    <div key={order.id} className="border border-slate-200 rounded-lg p-6">
+                    <div id={`order-${order.id}`} key={order.id} className="border border-slate-200 rounded-lg p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div>
                           <h3 className="text-lg font-semibold text-slate-900">

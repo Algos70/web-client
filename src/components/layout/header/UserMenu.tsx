@@ -55,7 +55,7 @@ export default function UserMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-3 hover:bg-slate-50 rounded-xl px-4 py-2 transition-all duration-200 cursor-pointer border border-transparent hover:border-slate-200"
+        className="profile-button flex items-center space-x-3 hover:bg-slate-50 rounded-xl px-4 py-2 transition-all duration-200 cursor-pointer border border-transparent hover:border-slate-200"
       >
         <span className="hidden sm:block text-sm text-slate-700 font-medium">
           {user?.name}
@@ -78,13 +78,14 @@ export default function UserMenu() {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 overflow-hidden">
+        <div className="profile-menu absolute right-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-100">
             <p className="text-sm font-medium text-slate-900">{user?.name}</p>
             <p className="text-xs text-slate-500 truncate">{user?.email}</p>
           </div>
           
           <button
+            id="my-profile"
             onClick={handleProfile}
             className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer flex items-center"
           >
@@ -95,6 +96,7 @@ export default function UserMenu() {
           </button>
 
           <button
+            id="my-orders"
             onClick={handleOrders}
             className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer flex items-center"
           >
@@ -105,6 +107,7 @@ export default function UserMenu() {
           </button>
 
           <button
+            id="my-wallets"
             onClick={handleWallets}
             className="w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer flex items-center"
           >
@@ -132,6 +135,7 @@ export default function UserMenu() {
           
           <hr className="my-1 border-slate-100" />
           <button
+            id="signout"
             onClick={handleLogout}
             className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer flex items-center"
           >

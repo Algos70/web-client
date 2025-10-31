@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface CreateWalletModalProps {
   isOpen: boolean;
@@ -20,7 +20,10 @@ const CreateWalletModal: React.FC<CreateWalletModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+    <div
+      id="create-wallet-modal"
+      className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50"
+    >
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <h3 className="text-xl font-bold mb-4">Create New Wallet</h3>
         <form onSubmit={onSubmit}>
@@ -29,6 +32,7 @@ const CreateWalletModal: React.FC<CreateWalletModalProps> = ({
               Currency
             </label>
             <input
+              id="currency-input"
               type="text"
               value={currency}
               onChange={(e) => onCurrencyChange(e.target.value.toUpperCase())}
@@ -47,6 +51,7 @@ const CreateWalletModal: React.FC<CreateWalletModalProps> = ({
               Cancel
             </button>
             <button
+              id="create-wallet"
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:cursor-pointer transition-colors disabled:opacity-50"

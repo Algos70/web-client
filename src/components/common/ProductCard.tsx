@@ -12,8 +12,6 @@ export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const [addItemToCart, { loading: addingToCart }] = useAddItemToCart();
 
-
-
   const handleCardClick = () => {
     router.push(`/product/${product.slug}`);
   };
@@ -59,6 +57,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <div
+      id={`product-${product.slug}`}
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleCardClick}
     >
@@ -81,6 +80,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {formatCurrency(product.priceMinor.toString(), product.currency)}
           </span>
           <button
+            id={`add-to-cart-${product.id}`}
             className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={product.stockQty === 0 || addingToCart}
             onClick={handleAddToCart}
