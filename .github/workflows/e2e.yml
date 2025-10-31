@@ -15,7 +15,7 @@ jobs:
         image: postgres:18
         env:
           POSTGRES_USER: app
-          POSTGRES_PASSWORD: app
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: shop
         ports:
           - 5432:5432
@@ -35,20 +35,21 @@ jobs:
         env:
           POSTGRES_DB: keycloak
           POSTGRES_USER: keycloak
-          POSTGRES_PASSWORD: keycloak
+          POSTGRES_PASSWORD: ${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}
 
+      # ✅ Artık GHCR'daki hazır realm'lı Keycloak image kullanılıyor
       keycloak:
-        image: quay.io/keycloak/keycloak:26.0
+        image: ghcr.io/algos70/keycloak-shop:latest
         ports:
           - 8080:8080
         env:
           KEYCLOAK_ADMIN: admin
-          KEYCLOAK_ADMIN_PASSWORD: admin
+          KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
           KC_DB: postgres
           KC_DB_URL_HOST: keycloak-db
           KC_DB_URL_DATABASE: keycloak
           KC_DB_USERNAME: keycloak
-          KC_DB_PASSWORD: keycloak
+          KC_DB_PASSWORD: ${{ secrets.KEYCLOAK_POSTGRES_PASSWORD }}
           KC_PROXY: edge
 
       backend:
@@ -60,14 +61,14 @@ jobs:
           DB_HOST: postgres
           DB_PORT: 5432
           DB_USERNAME: app
-          DB_PASSWORD: app
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_DATABASE: shop
           REDIS_HOST: redis
           REDIS_PORT: 6379
           KEYCLOAK_BASE_URL: http://keycloak:8080/
           KEYCLOAK_REALM: shop
           KEYCLOAK_CLIENT_ID: monolith-api
-          KEYCLOAK_CLIENT_SECRET: nonDohtDwCWJAy5IUSszZ7Ac7SXoOYsb
+          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           FRONTEND_URL: http://localhost:3000
 
     steps:
@@ -94,18 +95,13 @@ jobs:
       - name: Start frontend server
         run: nohup npm run start &
 
-      # ✅ DOĞRU ADRES: keycloak container adı ile eriş
-      - name: Wait for Keycloak to start
-        run: npx wait-on --timeout 90000 --interval 2000 http://keycloak:8080
+      # ✅ Artık import adımına gerek yok, sadece Keycloak'ın hazır olmasını bekliyoruz
+      - name: Wait for Keycloak to be ready
+        run: npx wait-on --timeout 120000 --interval 2000 http://localhost:8080/realms/shop
 
-      - name: Import Keycloak realm
-        run: |
-          docker cp ./shop-realm.json keycloak:/opt/keycloak/data/import/shop-realm.json
-          docker exec keycloak /opt/keycloak/bin/kc.sh import --file /opt/keycloak/data/import/shop-realm.json
-
-      # ✅ Backend & Frontend kontrolü
+      # ✅ Backend & Frontend hazır olana kadar bekle
       - name: Wait for backend & frontend to start
-        run: npx wait-on --timeout 90000 --interval 2000 http://localhost:4000 http://localhost:3000
+        run: npx wait-on --timeout 120000 --interval 2000 http://localhost:4000 http://localhost:3000
 
       - name: Run Playwright E2E tests
         run: |
