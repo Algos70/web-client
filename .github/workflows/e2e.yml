@@ -73,7 +73,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # GHCR login
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -81,13 +80,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Node setup
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      # Frontend setup
       - name: Install dependencies
         run: npm ci
 
@@ -97,20 +94,19 @@ jobs:
       - name: Start frontend server
         run: nohup npm run start &
 
-      # Keycloak realm import
+      # ✅ DOĞRU ADRES: keycloak container adı ile eriş
       - name: Wait for Keycloak to start
-        run: npx wait-on http://localhost:8080
+        run: npx wait-on --timeout 90000 --interval 2000 http://keycloak:8080
 
       - name: Import Keycloak realm
         run: |
           docker cp ./shop-realm.json keycloak:/opt/keycloak/data/import/shop-realm.json
           docker exec keycloak /opt/keycloak/bin/kc.sh import --file /opt/keycloak/data/import/shop-realm.json
 
-      # Bekleme: Backend + Frontend hazır mı?
+      # ✅ Backend & Frontend kontrolü
       - name: Wait for backend & frontend to start
-        run: npx wait-on http://localhost:3000 http://localhost:4000
+        run: npx wait-on --timeout 90000 --interval 2000 http://localhost:4000 http://localhost:3000
 
-      # Playwright E2E testleri
       - name: Run Playwright E2E tests
         run: |
           npx playwright install --with-deps
