@@ -56,6 +56,7 @@ import type {
   ProductConnection,
   ProductResult,
   ProductsResult,
+  UserWalletsResult,
   CreateProductInput,
   UpdateProductInput,
   StockOperationInput,
@@ -336,7 +337,7 @@ export const useDecreaseItemQuantity = () => {
 
 // Wallet hooks
 export const useUserWallets = () => {
-  return useQuery<{ userWallets: Wallet[] }>(GET_USER_WALLETS);
+  return useQuery<{ userWallets: UserWalletsResult }>(GET_USER_WALLETS);
 };
 
 export const useUserWalletByCurrency = (currency: string) => {

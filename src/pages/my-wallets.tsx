@@ -19,7 +19,13 @@ export default function MyWalletsPage() {
     error: walletsError,
   } = useUserWallets();
 
-  const wallets = walletsData?.userWallets || [];
+  const walletsResult = walletsData?.userWallets;
+  const wallets = walletsResult?.wallets || [];
+
+  // Handle UserWalletsResult error states
+  if (walletsResult && !walletsResult.success) {
+    return <WalletsErrorState error={walletsResult.message || "Failed to load wallets"} />;
+  }
   
   const {
     // State

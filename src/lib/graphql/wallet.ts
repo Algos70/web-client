@@ -6,14 +6,18 @@ export const WALLET_QUERIES = {
   GET_USER_WALLETS: gql`
     query GetUserWallets {
       userWallets {
-        id
-        currency
-        balanceMinor
-        createdAt
-        updatedAt
-        user {
+        success
+        message
+        wallets {
           id
-          email
+          currency
+          balanceMinor
+          createdAt
+          updatedAt
+          user {
+            id
+            email
+          }
         }
       }
     }

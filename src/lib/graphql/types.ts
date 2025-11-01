@@ -237,6 +237,12 @@ export interface DecreaseItemQuantityInput {
     products: Product[];
   }
 
+export interface UserWalletsResult {
+  success: boolean;
+  message: string;
+  wallets: Wallet[];
+}
+
 // Wallet Types
 export interface Wallet {
   id: string;

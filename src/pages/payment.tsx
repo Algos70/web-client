@@ -27,7 +27,13 @@ export default function PaymentPage() {
 
   const cart = cartData?.userCart;
   const items = cart?.items || [];
-  const wallets = walletsData?.userWallets || [];
+  const walletsResult = walletsData?.userWallets;
+  const wallets = walletsResult?.wallets || [];
+
+  // Handle UserWalletsResult error states
+  if (walletsResult && !walletsResult.success && !walletsLoading) {
+    return <ErrorState message={walletsResult.message || "Failed to load wallets"} />;
+  }
 
   // Get unique currencies from cart items
   const cartCurrencies = Array.from(
