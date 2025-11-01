@@ -90,6 +90,12 @@ const productTypeDefs = `
     pagination: Pagination!
   }
 
+  type ProductsResult {
+    success: Boolean!
+    message: String!
+    products: [Product!]!
+  }
+
    type ProductResult {
     success: Boolean!
     message: String!
@@ -101,12 +107,7 @@ const productTypeDefs = `
     requiredQty: Int!
   }
 
-  type ProductAvailability {
-    productId: ID!
-    available: Boolean!
-    requiredQty: Int!
-    stockQty: Int!
-  }
+
 
   extend type Query {
     # Admin queries
@@ -119,7 +120,7 @@ const productTypeDefs = `
     ): ProductConnection!
     adminProduct(id: ID!): ProductResult!
     adminProductBySlug(slug: String!): ProductResult!
-    adminProductsByCategory(categoryId: ID!): [Product!]!
+    adminProductsByCategory(categoryId: ID!): ProductsResult!
     adminProductStockCheck(id: ID!, qty: Int = 1): StockCheckResult!
     
     # Public category queries
@@ -136,10 +137,10 @@ const productTypeDefs = `
       categoryId: ID
       inStockOnly: Boolean = true
     ): ProductConnection!
-    product(id: ID!): Product!
+    product(id: ID!): ProductResult!
     productBySlug(slug: String!): ProductResult!
-    productsByCategory(categoryId: ID!): [Product!]!
-    productAvailability(id: ID!, qty: Int = 1): ProductAvailability!
+    productsByCategory(categoryId: ID!): ProductsResult!
+
     featuredProducts(limit: Int = 8): ProductConnection!
     searchProducts(
       search: String

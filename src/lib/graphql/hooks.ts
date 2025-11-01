@@ -12,7 +12,6 @@ import {
   GET_PRODUCT,
   GET_PRODUCT_BY_SLUG,
   GET_PRODUCTS_BY_CATEGORY,
-  GET_PRODUCT_AVAILABILITY,
   GET_FEATURED_PRODUCTS,
   SEARCH_PRODUCTS,
   GET_USER_CART,
@@ -56,12 +55,12 @@ import type {
   Product,
   ProductConnection,
   ProductResult,
+  ProductsResult,
   CreateProductInput,
   UpdateProductInput,
   StockOperationInput,
   PriceUpdateInput,
   StockCheckResult,
-  ProductAvailability,
   Cart,
   AddItemToCartInput,
   UpdateItemQuantityInput,
@@ -165,7 +164,7 @@ export const useAdminProductBySlug = (slug: string) => {
 };
 
 export const useAdminProductsByCategory = (categoryId: string) => {
-  return useQuery<{ adminProductsByCategory: Product[] }>(
+  return useQuery<{ adminProductsByCategory: ProductsResult }>(
     GET_ADMIN_PRODUCTS_BY_CATEGORY,
     {
       variables: { categoryId },
@@ -254,18 +253,11 @@ export const useProductBySlug = (slug: string) => {
 };
 
 export const useProductsByCategory = (categoryId: string) => {
-  return useQuery<{ productsByCategory: Product[] }>(GET_PRODUCTS_BY_CATEGORY, {
-    variables: { categoryId },
-    skip: !categoryId,
-  });
-};
-
-export const useProductAvailability = (id: string, qty: number = 1) => {
-  return useQuery<{ productAvailability: ProductAvailability }>(
-    GET_PRODUCT_AVAILABILITY,
+  return useQuery<{ productsByCategory: ProductsResult }>(
+    GET_PRODUCTS_BY_CATEGORY,
     {
-      variables: { id, qty },
-      skip: !id,
+      variables: { categoryId },
+      skip: !categoryId,
     }
   );
 };

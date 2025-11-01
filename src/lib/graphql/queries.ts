@@ -145,18 +145,22 @@ export const GET_ADMIN_PRODUCT_BY_SLUG = gql`
 export const GET_ADMIN_PRODUCTS_BY_CATEGORY = gql`
   query GetAdminProductsByCategory($categoryId: ID!) {
     adminProductsByCategory(categoryId: $categoryId) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      products {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
@@ -259,33 +263,28 @@ export const GET_PRODUCT_BY_SLUG = gql`
 export const GET_PRODUCTS_BY_CATEGORY = gql`
   query GetProductsByCategory($categoryId: ID!) {
     productsByCategory(categoryId: $categoryId) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      products {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
 `;
 
-export const GET_PRODUCT_AVAILABILITY = gql`
-  query GetProductAvailability($id: ID!, $qty: Int = 1) {
-    productAvailability(id: $id, qty: $qty) {
-      productId
-      available
-      requiredQty
-      stockQty
-    }
-  }
-`;
+
 
 export const GET_FEATURED_PRODUCTS = gql`
   query GetFeaturedProducts($limit: Int = 8) {

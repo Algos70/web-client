@@ -186,12 +186,7 @@ export interface StockCheckResult {
   requiredQty: number;
 }
 
-export interface ProductAvailability {
-  productId: string;
-  available: boolean;
-  requiredQty: number;
-  stockQty: number;
-}
+
 
 // New type for category products result
 export interface CategoryProductsResult {
@@ -235,6 +230,12 @@ export interface DecreaseItemQuantityInput {
   productId: string;
   decreaseBy?: number;
 }
+
+ export interface ProductsResult {
+    success: boolean;
+    message: string;
+    products: Product[];
+  }
 
 // Wallet Types
 export interface Wallet {
