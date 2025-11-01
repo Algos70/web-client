@@ -48,13 +48,14 @@ import {
   LOGOUT,
   REFRESH_TOKEN,
 } from "./mutations";
-import type { 
-  Category, 
-  CategoryConnection, 
-  CreateCategoryInput, 
+import type {
+  Category,
+  CategoryConnection,
+  CreateCategoryInput,
   UpdateCategoryInput,
   Product,
   ProductConnection,
+  ProductResult,
   CreateProductInput,
   UpdateProductInput,
   StockOperationInput,
@@ -78,14 +79,21 @@ import type {
   RegisterResponse,
   LogoutResponse,
   LoginInput,
-  RegisterInput
+  RegisterInput,
 } from "./types";
 
 // Custom hooks for Category queries
-export const useAdminCategories = (page: number = 1, limit: number = 10, search?: string) => {
-  return useQuery<{ adminCategories: CategoryConnection }>(GET_ADMIN_CATEGORIES, {
-    variables: { page, limit, search },
-  });
+export const useAdminCategories = (
+  page: number = 1,
+  limit: number = 10,
+  search?: string
+) => {
+  return useQuery<{ adminCategories: CategoryConnection }>(
+    GET_ADMIN_CATEGORIES,
+    {
+      variables: { page, limit, search },
+    }
+  );
 };
 
 export const useAdminCategory = (id: string) => {
@@ -96,31 +104,42 @@ export const useAdminCategory = (id: string) => {
 };
 
 export const useAdminCategoryBySlug = (slug: string) => {
-  return useQuery<{ adminCategoryBySlug: Category }>(GET_ADMIN_CATEGORY_BY_SLUG, {
-    variables: { slug },
-    skip: !slug,
-  });
+  return useQuery<{ adminCategoryBySlug: Category }>(
+    GET_ADMIN_CATEGORY_BY_SLUG,
+    {
+      variables: { slug },
+      skip: !slug,
+    }
+  );
 };
 
 // Custom hooks for Category mutations
 export const useCreateCategory = () => {
-  return useMutation<{ adminCreateCategory: Category }, { input: CreateCategoryInput }>(CREATE_CATEGORY);
+  return useMutation<
+    { adminCreateCategory: Category },
+    { input: CreateCategoryInput }
+  >(CREATE_CATEGORY);
 };
 
 export const useUpdateCategory = () => {
-  return useMutation<{ adminUpdateCategory: Category }, { id: string; input: UpdateCategoryInput }>(UPDATE_CATEGORY);
+  return useMutation<
+    { adminUpdateCategory: Category },
+    { id: string; input: UpdateCategoryInput }
+  >(UPDATE_CATEGORY);
 };
 
 export const useDeleteCategory = () => {
-  return useMutation<{ adminDeleteCategory: boolean }, { id: string }>(DELETE_CATEGORY);
+  return useMutation<{ adminDeleteCategory: boolean }, { id: string }>(
+    DELETE_CATEGORY
+  );
 };
 
 // Custom hooks for Product queries
 export const useAdminProducts = (
-  page: number = 1, 
-  limit: number = 10, 
-  search?: string, 
-  categoryId?: string, 
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+  categoryId?: string,
   inStockOnly?: boolean
 ) => {
   return useQuery<{ adminProducts: ProductConnection }>(GET_ADMIN_PRODUCTS, {
@@ -136,57 +155,83 @@ export const useAdminProduct = (id: string) => {
 };
 
 export const useAdminProductBySlug = (slug: string) => {
-  return useQuery<{ adminProductBySlug: Product }>(GET_ADMIN_PRODUCT_BY_SLUG, {
-    variables: { slug },
-    skip: !slug,
-  });
+  return useQuery<{ adminProductBySlug: ProductResult }>(
+    GET_ADMIN_PRODUCT_BY_SLUG,
+    {
+      variables: { slug },
+      skip: !slug,
+    }
+  );
 };
 
 export const useAdminProductsByCategory = (categoryId: string) => {
-  return useQuery<{ adminProductsByCategory: Product[] }>(GET_ADMIN_PRODUCTS_BY_CATEGORY, {
-    variables: { categoryId },
-    skip: !categoryId,
-  });
+  return useQuery<{ adminProductsByCategory: Product[] }>(
+    GET_ADMIN_PRODUCTS_BY_CATEGORY,
+    {
+      variables: { categoryId },
+      skip: !categoryId,
+    }
+  );
 };
 
 export const useAdminProductStockCheck = (id: string, qty: number = 1) => {
-  return useQuery<{ adminProductStockCheck: StockCheckResult }>(GET_ADMIN_PRODUCT_STOCK_CHECK, {
-    variables: { id, qty },
-    skip: !id,
-  });
+  return useQuery<{ adminProductStockCheck: StockCheckResult }>(
+    GET_ADMIN_PRODUCT_STOCK_CHECK,
+    {
+      variables: { id, qty },
+      skip: !id,
+    }
+  );
 };
 
 // Custom hooks for Product mutations
 export const useCreateProduct = () => {
-  return useMutation<{ adminCreateProduct: Product }, { input: CreateProductInput }>(CREATE_PRODUCT);
+  return useMutation<
+    { adminCreateProduct: Product },
+    { input: CreateProductInput }
+  >(CREATE_PRODUCT);
 };
 
 export const useUpdateProduct = () => {
-  return useMutation<{ adminUpdateProduct: Product }, { id: string; input: UpdateProductInput }>(UPDATE_PRODUCT);
+  return useMutation<
+    { adminUpdateProduct: Product },
+    { id: string; input: UpdateProductInput }
+  >(UPDATE_PRODUCT);
 };
 
 export const useDeleteProduct = () => {
-  return useMutation<{ adminDeleteProduct: boolean }, { id: string }>(DELETE_PRODUCT);
+  return useMutation<{ adminDeleteProduct: boolean }, { id: string }>(
+    DELETE_PRODUCT
+  );
 };
 
 export const useIncreaseProductStock = () => {
-  return useMutation<{ adminIncreaseProductStock: Product }, { id: string; input: StockOperationInput }>(INCREASE_PRODUCT_STOCK);
+  return useMutation<
+    { adminIncreaseProductStock: Product },
+    { id: string; input: StockOperationInput }
+  >(INCREASE_PRODUCT_STOCK);
 };
 
 export const useDecreaseProductStock = () => {
-  return useMutation<{ adminDecreaseProductStock: Product }, { id: string; input: StockOperationInput }>(DECREASE_PRODUCT_STOCK);
+  return useMutation<
+    { adminDecreaseProductStock: Product },
+    { id: string; input: StockOperationInput }
+  >(DECREASE_PRODUCT_STOCK);
 };
 
 export const useUpdateProductPrice = () => {
-  return useMutation<{ adminUpdateProductPrice: Product }, { id: string; input: PriceUpdateInput }>(UPDATE_PRODUCT_PRICE);
+  return useMutation<
+    { adminUpdateProductPrice: Product },
+    { id: string; input: PriceUpdateInput }
+  >(UPDATE_PRODUCT_PRICE);
 };
 
 // Public Product hooks
 export const useProducts = (
-  page: number = 1, 
-  limit: number = 10, 
-  search?: string, 
-  categoryId?: string, 
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+  categoryId?: string,
   inStockOnly: boolean = true
 ) => {
   return useQuery<{ products: ProductConnection }>(GET_PRODUCTS, {
@@ -202,7 +247,7 @@ export const useProduct = (id: string) => {
 };
 
 export const useProductBySlug = (slug: string) => {
-  return useQuery<{ productBySlug: Product }>(GET_PRODUCT_BY_SLUG, {
+  return useQuery<{ productBySlug: ProductResult }>(GET_PRODUCT_BY_SLUG, {
     variables: { slug },
     skip: !slug,
   });
@@ -216,17 +261,26 @@ export const useProductsByCategory = (categoryId: string) => {
 };
 
 export const useProductAvailability = (id: string, qty: number = 1) => {
-  return useQuery<{ productAvailability: ProductAvailability }>(GET_PRODUCT_AVAILABILITY, {
-    variables: { id, qty },
-    skip: !id,
-  });
+  return useQuery<{ productAvailability: ProductAvailability }>(
+    GET_PRODUCT_AVAILABILITY,
+    {
+      variables: { id, qty },
+      skip: !id,
+    }
+  );
 };
 
-export const useFeaturedProducts = (limit: number = 8, options?: { skip?: boolean }) => {
-  return useQuery<{ featuredProducts: ProductConnection }>(GET_FEATURED_PRODUCTS, {
-    variables: { limit },
-    skip: options?.skip,
-  });
+export const useFeaturedProducts = (
+  limit: number = 8,
+  options?: { skip?: boolean }
+) => {
+  return useQuery<{ featuredProducts: ProductConnection }>(
+    GET_FEATURED_PRODUCTS,
+    {
+      variables: { limit },
+      skip: options?.skip,
+    }
+  );
 };
 
 export const useSearchProducts = (
@@ -247,15 +301,21 @@ export const useUserCart = () => {
 };
 
 export const useAddItemToCart = () => {
-  return useMutation<{ addItemToCart: Cart }, { input: AddItemToCartInput }>(ADD_ITEM_TO_CART, {
-    refetchQueries: [{ query: GET_USER_CART }],
-  });
+  return useMutation<{ addItemToCart: Cart }, { input: AddItemToCartInput }>(
+    ADD_ITEM_TO_CART,
+    {
+      refetchQueries: [{ query: GET_USER_CART }],
+    }
+  );
 };
 
 export const useRemoveItemFromCart = () => {
-  return useMutation<{ removeItemFromCart: Cart }, { productId: string }>(REMOVE_ITEM_FROM_CART, {
-    refetchQueries: [{ query: GET_USER_CART }],
-  });
+  return useMutation<{ removeItemFromCart: Cart }, { productId: string }>(
+    REMOVE_ITEM_FROM_CART,
+    {
+      refetchQueries: [{ query: GET_USER_CART }],
+    }
+  );
 };
 
 export const useClearCart = () => {
@@ -265,13 +325,19 @@ export const useClearCart = () => {
 };
 
 export const useUpdateItemQuantity = () => {
-  return useMutation<{ updateItemQuantity: Cart }, { input: UpdateItemQuantityInput }>(UPDATE_ITEM_QUANTITY, {
+  return useMutation<
+    { updateItemQuantity: Cart },
+    { input: UpdateItemQuantityInput }
+  >(UPDATE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],
   });
 };
 
 export const useDecreaseItemQuantity = () => {
-  return useMutation<{ decreaseItemQuantity: Cart }, { input: DecreaseItemQuantityInput }>(DECREASE_ITEM_QUANTITY, {
+  return useMutation<
+    { decreaseItemQuantity: Cart },
+    { input: DecreaseItemQuantityInput }
+  >(DECREASE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],
   });
 };
@@ -282,39 +348,57 @@ export const useUserWallets = () => {
 };
 
 export const useUserWalletByCurrency = (currency: string) => {
-  return useQuery<{ userWalletByCurrency: Wallet | null }>(GET_USER_WALLET_BY_CURRENCY, {
-    variables: { currency },
-    skip: !currency,
-  });
+  return useQuery<{ userWalletByCurrency: Wallet | null }>(
+    GET_USER_WALLET_BY_CURRENCY,
+    {
+      variables: { currency },
+      skip: !currency,
+    }
+  );
 };
 
 export const useUserWalletBalance = (currency: string) => {
-  return useQuery<{ userWalletBalance: BalanceResponse }>(GET_USER_WALLET_BALANCE, {
-    variables: { currency },
-    skip: !currency,
-  });
+  return useQuery<{ userWalletBalance: BalanceResponse }>(
+    GET_USER_WALLET_BALANCE,
+    {
+      variables: { currency },
+      skip: !currency,
+    }
+  );
 };
 
 export const useCreateUserWallet = () => {
-  return useMutation<{ createUserWallet: Wallet }, { input: CreateUserWalletInput }>(CREATE_USER_WALLET, {
+  return useMutation<
+    { createUserWallet: Wallet },
+    { input: CreateUserWalletInput }
+  >(CREATE_USER_WALLET, {
     refetchQueries: [{ query: GET_USER_WALLETS }],
   });
 };
 
 export const useIncreaseUserWalletBalance = () => {
-  return useMutation<{ increaseUserWalletBalance: Wallet }, { walletId: string; input: BalanceOperationInput }>(INCREASE_USER_WALLET_BALANCE, {
+  return useMutation<
+    { increaseUserWalletBalance: Wallet },
+    { walletId: string; input: BalanceOperationInput }
+  >(INCREASE_USER_WALLET_BALANCE, {
     refetchQueries: [{ query: GET_USER_WALLETS }],
   });
 };
 
 export const useDeleteUserWallet = () => {
-  return useMutation<{ deleteUserWallet: boolean }, { walletId: string }>(DELETE_USER_WALLET, {
-    refetchQueries: [{ query: GET_USER_WALLETS }],
-  });
+  return useMutation<{ deleteUserWallet: boolean }, { walletId: string }>(
+    DELETE_USER_WALLET,
+    {
+      refetchQueries: [{ query: GET_USER_WALLETS }],
+    }
+  );
 };
 
 export const useTransferFromUserWallet = () => {
-  return useMutation<{ transferFromUserWallet: TransferResponse }, { input: UserTransferInput }>(TRANSFER_FROM_USER_WALLET, {
+  return useMutation<
+    { transferFromUserWallet: TransferResponse },
+    { input: UserTransferInput }
+  >(TRANSFER_FROM_USER_WALLET, {
     refetchQueries: [{ query: GET_USER_WALLETS }],
   });
 };
@@ -331,7 +415,10 @@ export const useUserOrder = (id: string) => {
 };
 
 export const useCreateOrderFromCart = () => {
-  return useMutation<{ createOrderFromCart: Order }, { input: CreateOrderFromCartInput }>(CREATE_ORDER_FROM_CART, {
+  return useMutation<
+    { createOrderFromCart: Order },
+    { input: CreateOrderFromCartInput }
+  >(CREATE_ORDER_FROM_CART, {
     refetchQueries: [{ query: GET_USER_CART }, { query: GET_USER_ORDERS }],
   });
 };
@@ -339,7 +426,7 @@ export const useCreateOrderFromCart = () => {
 // Authentication hooks
 export const useMe = () => {
   return useQuery<{ me: AuthUser }>(GET_ME, {
-    errorPolicy: 'ignore', // Ignore 401 errors for unauthenticated users
+    errorPolicy: "ignore", // Ignore 401 errors for unauthenticated users
   });
 };
 
@@ -348,7 +435,9 @@ export const useLogin = () => {
 };
 
 export const useRegister = () => {
-  return useMutation<{ register: RegisterResponse }, { input: RegisterInput }>(REGISTER);
+  return useMutation<{ register: RegisterResponse }, { input: RegisterInput }>(
+    REGISTER
+  );
 };
 
 export const useLogout = () => {

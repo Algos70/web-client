@@ -175,6 +175,8 @@ export interface PriceUpdateInput {
 }
 
 export interface ProductConnection {
+  success: boolean;
+  message: string;
   products: Product[];
   pagination: Pagination;
 }
@@ -197,6 +199,12 @@ export interface CategoryProductsResult {
   products: Product[];
   pagination: Pagination;
 }
+
+export interface ProductResult {
+    success: boolean;
+    message: string;
+    product: Product;
+  }
 
 // Cart input types
 export interface CreateCartInput {

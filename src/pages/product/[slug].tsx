@@ -7,18 +7,18 @@ import ProductBreadcrumb from "../../components/product/ProductBreadcrumb";
 import ProductDetailLayout from "../../components/product/ProductDetailLayout";
 import ErrorPage from "../../components/common/ErrorPage";
 import { GET_PRODUCT_BY_SLUG } from "../../lib/graphql/queries";
-import { Product } from "../../lib/graphql/types";
+import { Product, ProductResult } from "../../lib/graphql/types";
 import { createSSRHandler, extractSlug } from "../../lib/utils/ssr";
 
 interface ProductQueryResponse {
-  productBySlug: Product;
+  productBySlug: ProductResult;
 }
 
 interface ProductDetailPageProps {
-  productBySlugData?: Product;
+  productBySlugData?: ProductResult;
 }
 
-export default function ProductDetailPage({ productBySlugData: initialProduct }: ProductDetailPageProps) {
+export default function ProductDetailPage({ productBySlugData: initialProductResult }: ProductDetailPageProps) {
   const router = useRouter();
   const { slug } = router.query;
 
@@ -28,7 +28,7 @@ export default function ProductDetailPage({ productBySlugData: initialProduct }:
       variables: {
         slug: slug as string,
       },
-      skip: !slug || !!initialProduct,
+      skip: !slug || !!initialProductResult,
     }
   );
 
@@ -75,7 +75,23 @@ export default function ProductDetailPage({ productBySlugData: initialProduct }:
     );
   }
 
-  const product = initialProduct || data?.productBySlug;
+  const productResult = data?.productBySlug || initialProductResult;
+  const product = productResult?.product;
+
+  // Handle ProductResult error states
+  if (productResult && !productResult.success) {
+    return (
+      <>
+        <Head>
+          <title>Product Not Found - E-Commerce Store</title>
+        </Head>
+        <ErrorPage
+          title="Product Not Found"
+          message={productResult.message || "The product you're looking for doesn't exist."}
+        />
+      </>
+    );
+  }
 
   if (!product) {
     return (

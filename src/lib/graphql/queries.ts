@@ -121,18 +121,22 @@ export const GET_ADMIN_PRODUCT = gql`
 export const GET_ADMIN_PRODUCT_BY_SLUG = gql`
   query GetAdminProductBySlug($slug: String!) {
     adminProductBySlug(slug: $slug) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      product {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
@@ -231,18 +235,22 @@ export const GET_PRODUCT = gql`
 export const GET_PRODUCT_BY_SLUG = gql`
   query GetProductBySlug($slug: String!) {
     productBySlug(slug: $slug) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      product {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
