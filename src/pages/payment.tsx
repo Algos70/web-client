@@ -100,14 +100,22 @@ export default function PaymentPage() {
         const error = result.error as any;
         if (error.errors && error.errors.length > 0) {
           const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
+          toast.error(errorMessage, {
+            className: 'order-error-toast'
+          });
         } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
+          toast.error("Network error occurred. Please try again.", {
+            className: 'order-error-toast'
+          });
         } else {
-          toast.error("An error occurred while creating the order.");
+          toast.error("An error occurred while creating the order.", {
+            className: 'order-error-toast'
+          });
         }
       } else if (result.data?.createOrderFromCart) {
-        toast.success("Order placed successfully!");
+        toast.success("Order placed successfully!", {
+          className: 'order-success-toast'
+        });
         // Redirect to order confirmation or orders page
         router.push('/my-orders');
       }
@@ -115,9 +123,13 @@ export default function PaymentPage() {
       console.error("Error creating order:", error);
       // Handle network errors or other unexpected errors
       if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
+        toast.error("Network error occurred. Please try again.", {
+          className: 'order-error-toast'
+        });
       } else {
-        toast.error("Failed to create order. Please try again.");
+        toast.error("Failed to create order. Please try again.", {
+          className: 'order-error-toast'
+        });
       }
     } finally {
       setIsProcessing(false);

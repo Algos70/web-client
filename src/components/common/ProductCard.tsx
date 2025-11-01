@@ -34,23 +34,41 @@ export default function ProductCard({ product }: ProductCardProps) {
         const error = result.error as any;
         if (error.errors && error.errors.length > 0) {
           const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
+          toast.error(errorMessage, { 
+            id: `product-fail-${product.id}`,
+            className: 'product-error-toast'
+          });
         } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
+          toast.error("Network error occurred. Please try again.", { 
+            id: `product-fail-${product.id}`,
+            className: 'product-error-toast'
+          });
         } else {
-          toast.error("An error occurred while adding item to cart.");
+          toast.error("An error occurred while adding item to cart.", { 
+            id: `product-fail-${product.id}`,
+            className: 'product-error-toast'
+          });
         }
       } else {
-        toast.success("Product added to cart successfully!");
+        toast.success("Product added to cart successfully!", { 
+          id: `product-success-${product.id}`,
+          className: 'product-success-toast'
+        });
       }
     } catch (error: any) {
       console.error("Error adding item to cart:", error);
 
       // Handle network errors or other unexpected errors
       if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
+        toast.error("Network error occurred. Please try again.", { 
+          id: `product-fail-${product.id}`,
+          className: 'product-error-toast'
+        });
       } else {
-        toast.error("An error occurred while adding item to cart.");
+        toast.error("An error occurred while adding item to cart.", { 
+          id: `product-fail-${product.id}`,
+          className: 'product-error-toast'
+        });
       }
     }
   };

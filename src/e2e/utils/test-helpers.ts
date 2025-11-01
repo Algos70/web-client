@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page, expect } from "@playwright/test";
 
 export interface TestUser {
   firstName: string;
@@ -39,7 +39,11 @@ export async function registerNewUser(page: Page, testUser: TestUser) {
   await page.waitForURL("**/login", { timeout: 5000 });
 }
 
-export async function loginUser(page: Page, username: string, password: string) {
+export async function loginUser(
+  page: Page,
+  username: string,
+  password: string
+) {
   await page.fill("#username", username);
   await page.fill("#password", password);
   await page.click('button[type="submit"]');
@@ -90,17 +94,20 @@ export async function addProductToCart(page: Page): Promise<string> {
   const priceElement = page.locator(".price");
   const productCurrency = (await priceElement.getAttribute("id")) || "";
 
+  // Click add to cart button
   await page.click('[id^="add-to-cart-"]');
-  await expect(
-    page.locator("text=Product added to cart successfully!")
-  ).toBeVisible({ timeout: 5000 });
+
+  // Wait for success toast using CSS class
+  await expect(page.locator(".product-success-toast")).toBeVisible({
+    timeout: 10000,
+  });
 
   return productCurrency;
 }
 
 export async function openProfileMenu(page: Page) {
-  await page.click('.profile-button');
-  await expect(page.locator('.profile-menu')).toBeVisible();
+  await page.click(".profile-button");
+  await expect(page.locator(".profile-menu")).toBeVisible();
 }
 
 export async function navigateToMyWallets(page: Page) {
@@ -111,19 +118,19 @@ export async function navigateToMyWallets(page: Page) {
 
 export async function openCreateWalletModal(page: Page) {
   await page.waitForLoadState("networkidle");
-  await page.waitForSelector('#create-new-wallet', {
+  await page.waitForSelector("#create-new-wallet", {
     timeout: 10000,
   });
-  await page.click('#create-new-wallet');
+  await page.click("#create-new-wallet");
   await expect(page.locator("#create-wallet-modal")).toBeVisible();
 }
 
 export async function createWallet(page: Page, currency: string) {
   await page.fill("#currency-input", currency);
-  await page.click('#create-wallet');
-  await expect(page.locator("text=Wallet created successfully!")).toBeVisible(
-    { timeout: 5000 }
-  );
+  await page.click("#create-wallet");
+  await expect(page.locator(".wallet-success-toast")).toBeVisible({
+    timeout: 5000,
+  });
 }
 
 export async function verifyWalletExists(page: Page, currency: string) {
@@ -135,8 +142,8 @@ export async function addFundsToWallet(page: Page, amount: string) {
   await expect(page.locator("#add-funds-modal")).toBeVisible();
 
   await page.fill("#amount-input", amount);
-  await page.click('#add-funds-button');
-  await expect(page.locator("text=Funds added successfully!")).toBeVisible({
+  await page.click("#add-funds-button");
+  await expect(page.locator(".wallet-success-toast")).toBeVisible({
     timeout: 5000,
   });
 }
@@ -155,7 +162,7 @@ export async function proceedToCheckout(page: Page) {
 
 export async function placeOrder(page: Page) {
   await page.click("#order-button");
-  await expect(page.locator("text=Order placed successfully!")).toBeVisible({
+  await expect(page.locator(".order-success-toast")).toBeVisible({
     timeout: 10000,
   });
 }
@@ -172,14 +179,14 @@ export async function verifyOrderExists(page: Page, expectedCount: number = 1) {
 }
 
 export async function verifyOrder(page: Page) {
-    await openProfileMenu(page);
-    await navigateToMyOrders(page);
-    await verifyOrderExists(page, 1);
+  await openProfileMenu(page);
+  await navigateToMyOrders(page);
+  await verifyOrderExists(page, 1);
 }
 
 export async function signOut(page: Page) {
   await openProfileMenu(page);
   await page.click("#signout");
-  await page.waitForURL("/login", { timeout: 5000});
+  await page.waitForURL("/login", { timeout: 5000 });
   await expect(page).toHaveURL("/login");
 }

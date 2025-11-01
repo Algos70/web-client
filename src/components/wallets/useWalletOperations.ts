@@ -39,11 +39,17 @@ export function useWalletOperations(wallets: Wallet[]) {
 
   const handleError = (error: any, defaultMessage: string) => {
     if (error.errors && error.errors.length > 0) {
-      toast.error(error.errors[0].message);
+      toast.error(error.errors[0].message, {
+        className: 'wallet-error-toast'
+      });
     } else if (error.networkError) {
-      toast.error("Network error occurred. Please try again.");
+      toast.error("Network error occurred. Please try again.", {
+        className: 'wallet-error-toast'
+      });
     } else {
-      toast.error(defaultMessage);
+      toast.error(defaultMessage, {
+        className: 'wallet-error-toast'
+      });
     }
   };
 
@@ -65,7 +71,9 @@ export function useWalletOperations(wallets: Wallet[]) {
       } else {
         setShowCreateForm(false);
         setNewWalletCurrency("USD");
-        toast.success("Wallet created successfully!");
+        toast.success("Wallet created successfully!", {
+          className: 'wallet-success-toast'
+        });
       }
     } catch (error: any) {
       console.error("Error creating wallet:", error);
@@ -92,7 +100,9 @@ export function useWalletOperations(wallets: Wallet[]) {
       if (result.error) {
         handleError(result.error, "Failed to delete wallet");
       } else {
-        toast.success("Wallet deleted successfully!");
+        toast.success("Wallet deleted successfully!", {
+          className: 'wallet-success-toast'
+        });
       }
       setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
     } catch (error: any) {
@@ -128,7 +138,9 @@ export function useWalletOperations(wallets: Wallet[]) {
       } else {
         setShowAddFundsModal(null);
         setAddFundsAmount("");
-        toast.success("Funds added successfully!");
+        toast.success("Funds added successfully!", {
+          className: 'wallet-success-toast'
+        });
       }
     } catch (error: any) {
       console.error("Error adding funds:", error);
@@ -167,7 +179,9 @@ export function useWalletOperations(wallets: Wallet[]) {
         setShowTransferModal(null);
         setTransferTargetWalletId("");
         setTransferAmount("");
-        toast.success("Funds transferred successfully!");
+        toast.success("Funds transferred successfully!", {
+          className: 'wallet-success-toast'
+        });
       }
     } catch (error: any) {
       console.error("Error transferring funds:", error);
