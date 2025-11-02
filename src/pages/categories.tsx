@@ -1,23 +1,19 @@
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useQuery } from '@apollo/client/react';
+import { useCategories } from "../lib/graphql/hooks";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import Breadcrumb from "../components/common/Breadcrumb";
 import Pagination from "../components/common/Pagination";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import ErrorPage from "../components/common/ErrorPage";
 import { getCategoriesBreadcrumbs } from "../lib/utils/breadcrumbHelpers";
+import { CategoriesResponse } from "../lib/graphql/types";
 import { GET_CATEGORIES } from "../lib/graphql/queries";
-import { CategoryConnection } from "../lib/graphql/types";
 import { createSSRHandler, extractCategoryFilters } from "../lib/utils/ssr";
 
-interface CategoriesQueryResponse {
-  categories: CategoryConnection;
-}
-
 interface CategoriesPageProps {
-  categoriesData?: CategoryConnection;
+  categoriesData?: CategoriesResponse;
 }
 
 // Helper functions from CategoriesSection
@@ -107,14 +103,7 @@ export default function CategoriesPage({ categoriesData: initialCategoriesData }
   const { page: pageParam, search } = router.query;
   const currentPage = parseInt(pageParam as string) || 1;
 
-  const { data, loading, error } = useQuery<CategoriesQueryResponse>(GET_CATEGORIES, {
-    variables: {
-      page: currentPage,
-      limit: 10,
-      search: search as string
-    },
-    skip: !!initialCategoriesData && currentPage === 1 && !search
-  });
+  const { data, loading, error } = useCategories(currentPage, 10, search as string);
 
   if (loading) {
     return (
@@ -143,7 +132,7 @@ export default function CategoriesPage({ categoriesData: initialCategoriesData }
 
   // Use SSR data if conditions match, otherwise use client data
   const shouldUseSSRData = !!initialCategoriesData && currentPage === 1 && !search;
-  const categoriesData = shouldUseSSRData ? initialCategoriesData : data?.categories;
+  const categoriesData = shouldUseSSRData ? initialCategoriesData : (data?.categories?.success ? data.categories : null);
   const categories = categoriesData?.categories || [];
   const pagination = categoriesData?.pagination;
 

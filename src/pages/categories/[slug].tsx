@@ -1,23 +1,19 @@
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useQuery } from "@apollo/client/react";
+import { useCategoryProducts } from "../../lib/graphql/hooks";
 import AuthenticatedLayout from "../../components/layouts/AuthenticatedLayout";
 import CategoryHeader from "../../components/common/CategoryHeader";
 import CategoryProductsGrid from "../../components/common/CategoryProductsGrid";
 import Pagination from "../../components/common/Pagination";
 import LoadingSkeleton from "../../components/common/LoadingSkeleton";
 import ErrorPage from "../../components/common/ErrorPage";
+import { CategoryProductsResponse } from "../../lib/graphql/types";
 import { GET_CATEGORY_PRODUCTS } from "../../lib/graphql/queries";
-import { CategoryProductsResult } from "../../lib/graphql/types";
 import { createSSRHandler, extractCategoryPagination } from "../../lib/utils/ssr";
 
-interface CategoryProductsQueryResponse {
-  categoryProducts: CategoryProductsResult;
-}
-
 interface CategoryPageProps {
-  categoryProductsData?: CategoryProductsResult;
+  categoryProductsData?: CategoryProductsResponse;
 }
 
 export default function CategoryPage({ categoryProductsData: initialCategoryData }: CategoryPageProps) {
@@ -25,17 +21,11 @@ export default function CategoryPage({ categoryProductsData: initialCategoryData
   const { slug, page: pageParam } = router.query;
   const currentPage = parseInt(pageParam as string) || 1;
 
-  const { data, loading, error } = useQuery<CategoryProductsQueryResponse>(
-    GET_CATEGORY_PRODUCTS,
-    {
-      variables: {
-        slug: slug as string,
-        page: currentPage,
-        limit: 5, // Reduced to test pagination
-        inStockOnly: true,
-      },
-      skip: !slug || (!!initialCategoryData && currentPage === 1),
-    }
+  const { data, loading, error } = useCategoryProducts(
+    slug as string,
+    currentPage,
+    5, // Reduced to test pagination
+    true
   );
 
   if (loading) {
@@ -65,7 +55,7 @@ export default function CategoryPage({ categoryProductsData: initialCategoryData
 
   // Use SSR data if conditions match, otherwise use client data
   const shouldUseSSRData = !!initialCategoryData && currentPage === 1;
-  const categoryData = shouldUseSSRData ? initialCategoryData : data?.categoryProducts;
+  const categoryData = shouldUseSSRData ? initialCategoryData : (data?.categoryProducts?.success ? data.categoryProducts : null);
   const category = categoryData?.category;
   const products = categoryData?.products || [];
   const pagination = categoryData?.pagination;

@@ -1,34 +1,20 @@
-import { useQuery } from "@apollo/client/react";
-import { GET_CATEGORIES } from "../../lib/graphql/queries";
-import { CategoryConnection } from "../../lib/graphql/types";
+import { useCategories } from "../../lib/graphql/hooks";
+import { CategoriesResponse } from "../../lib/graphql/types";
 import { getCategoryColor } from "../../lib/utils/categoryColors";
 import SectionHeader from "./SectionHeader";
 import CategoriesLoadingSkeleton from "./CategoriesLoadingSkeleton";
 import CategoriesGrid from "./CategoriesGrid";
 import ViewAllButton from "./ViewAllButton";
 
-interface CategoriesQueryResponse {
-  categories: CategoryConnection;
-}
-
 interface CategoriesSectionProps {
-  initialData?: CategoryConnection;
+  initialData?: CategoriesResponse;
 }
 
 export default function CategoriesSection({ initialData }: CategoriesSectionProps) {
-  const { data, loading, error } = useQuery<CategoriesQueryResponse>(
-    GET_CATEGORIES,
-    {
-      variables: {
-        page: 1,
-        limit: 6, // Show 6 categories on homepage
-      },
-      skip: !!initialData,
-    }
-  );
+  const { data, loading, error } = useCategories(1, 6);
 
   // Use SSR data if available, otherwise use client data
-  const categoriesData = initialData || data?.categories;
+  const categoriesData = initialData || (data?.categories?.success ? data.categories : null);
 
   // Loading state (only if no SSR data)
   if (loading && !initialData) {

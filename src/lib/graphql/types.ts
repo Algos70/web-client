@@ -304,6 +304,28 @@ export interface CartOperationResponse {
   message: string;
 }
 
+// Category Response Types
+export interface CategoryResponse {
+  success: boolean;
+  message: string;
+  category: Category;
+}
+
+export interface CategoriesResponse {
+  success: boolean;
+  message: string;
+  categories: Category[];
+  pagination: Pagination;
+}
+
+export interface CategoryProductsResponse {
+  success: boolean;
+  message: string;
+  category: Category;
+  products: Product[];
+  pagination: Pagination;
+}
+
 // Wallet Input Types
 export interface CreateWalletInput {
   userId: string;

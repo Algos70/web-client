@@ -14,6 +14,10 @@ import {
   GET_PRODUCTS_BY_CATEGORY,
   GET_FEATURED_PRODUCTS,
   SEARCH_PRODUCTS,
+  GET_CATEGORIES,
+  GET_CATEGORY,
+  GET_CATEGORY_BY_SLUG,
+  GET_CATEGORY_PRODUCTS,
   GET_USER_CART,
   GET_USER_WALLETS,
   GET_USER_WALLET_BY_CURRENCY,
@@ -73,6 +77,9 @@ import type {
   UserCartResponse,
   CartItemResponse,
   CartOperationResponse,
+  CategoryResponse,
+  CategoriesResponse,
+  CategoryProductsResponse,
   CreateUserWalletInput,
   BalanceOperationInput,
   UserTransferInput,
@@ -135,6 +142,52 @@ export const useUpdateCategory = () => {
 export const useDeleteCategory = () => {
   return useMutation<{ adminDeleteCategory: boolean }, { id: string }>(
     DELETE_CATEGORY
+  );
+};
+
+// Public Category hooks
+export const useCategories = (
+  page: number = 1,
+  limit: number = 10,
+  search?: string
+) => {
+  return useQuery<{ categories: CategoriesResponse }>(
+    GET_CATEGORIES,
+    {
+      variables: { page, limit, search },
+    }
+  );
+};
+
+export const useCategory = (id: string) => {
+  return useQuery<{ category: CategoryResponse }>(GET_CATEGORY, {
+    variables: { id },
+    skip: !id,
+  });
+};
+
+export const useCategoryBySlug = (slug: string) => {
+  return useQuery<{ categoryBySlug: CategoryResponse }>(
+    GET_CATEGORY_BY_SLUG,
+    {
+      variables: { slug },
+      skip: !slug,
+    }
+  );
+};
+
+export const useCategoryProducts = (
+  slug: string,
+  page: number = 1,
+  limit: number = 10,
+  inStockOnly: boolean = true
+) => {
+  return useQuery<{ categoryProducts: CategoryProductsResponse }>(
+    GET_CATEGORY_PRODUCTS,
+    {
+      variables: { slug, page, limit, inStockOnly },
+      skip: !slug,
+    }
   );
 };
 

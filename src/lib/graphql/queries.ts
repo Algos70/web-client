@@ -358,6 +358,8 @@ export const SEARCH_PRODUCTS = gql`
 export const GET_CATEGORIES = gql`
   query GetCategories($page: Int = 1, $limit: Int = 10, $search: String) {
     categories(page: $page, limit: $limit, search: $search) {
+      success
+      message
       categories {
         id
         slug
@@ -382,14 +384,18 @@ export const GET_CATEGORIES = gql`
 export const GET_CATEGORY = gql`
   query GetCategory($id: ID!) {
     category(id: $id) {
-      id
-      slug
-      name
-      createdAt
-      updatedAt
-      products {
+      success
+      message
+      category {
         id
+        slug
         name
+        createdAt
+        updatedAt
+        products {
+          id
+          name
+        }
       }
     }
   }
@@ -398,14 +404,18 @@ export const GET_CATEGORY = gql`
 export const GET_CATEGORY_BY_SLUG = gql`
   query GetCategoryBySlug($slug: String!) {
     categoryBySlug(slug: $slug) {
-      id
-      slug
-      name
-      createdAt
-      updatedAt
-      products {
+      success
+      message
+      category {
         id
+        slug
         name
+        createdAt
+        updatedAt
+        products {
+          id
+          name
+        }
       }
     }
   }
@@ -424,6 +434,8 @@ export const GET_CATEGORY_PRODUCTS = gql`
       limit: $limit
       inStockOnly: $inStockOnly
     ) {
+      success
+      message
       category {
         id
         slug
