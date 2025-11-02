@@ -510,14 +510,18 @@ export const GET_USER_WALLETS = gql`
 export const GET_USER_WALLET_BY_CURRENCY = gql`
   query GetUserWalletByCurrency($currency: String!) {
     userWalletByCurrency(currency: $currency) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      wallet {
         id
-        email
+        currency
+        balanceMinor
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+        }
       }
     }
   }

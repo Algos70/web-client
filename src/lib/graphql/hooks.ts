@@ -342,7 +342,7 @@ export const useUserWallets = () => {
 };
 
 export const useUserWalletByCurrency = (currency: string) => {
-  return useQuery<{ userWalletByCurrency: Wallet | null }>(
+  return useQuery<{ userWalletByCurrency: UserWalletResult }>(
     GET_USER_WALLET_BY_CURRENCY,
     {
       variables: { currency },
