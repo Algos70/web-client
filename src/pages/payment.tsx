@@ -118,12 +118,16 @@ export default function PaymentPage() {
             className: 'order-error-toast'
           });
         }
-      } else if (result.data?.createOrderFromCart) {
-        toast.success("Order placed successfully!", {
+      } else if (result.data?.createOrderFromCart?.success) {
+        toast.success(result.data.createOrderFromCart.message || "Order placed successfully!", {
           className: 'order-success-toast'
         });
         // Redirect to order confirmation or orders page
         router.push('/my-orders');
+      } else if (result.data?.createOrderFromCart && !result.data.createOrderFromCart.success) {
+        toast.error(result.data.createOrderFromCart.message || "Failed to create order", {
+          className: 'order-error-toast'
+        });
       }
     } catch (error: any) {
       console.error("Error creating order:", error);

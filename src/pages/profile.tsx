@@ -22,7 +22,7 @@ export default function Profile() {
     }
   }, [router.query]);
 
-  const orders = ordersData?.userOrders || [];
+  const orders = ordersData?.userOrders?.orders || [];
 
   const callBackend = async () => {
     try {

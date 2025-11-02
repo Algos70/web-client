@@ -388,3 +388,16 @@ export interface OrderConnection {
   orders: Order[];
   pagination: Pagination;
 }
+
+// Order Response Types
+export interface UserOrdersResponse {
+  success: boolean;
+  message: string;
+  orders: Order[];
+}
+
+export interface CreateOrderFromCartResponse {
+  success: boolean;
+  message: string;
+  order: Order | null;
+}

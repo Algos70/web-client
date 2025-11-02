@@ -244,32 +244,36 @@ export const TRANSFER_FROM_USER_WALLET = gql`
 export const CREATE_ORDER_FROM_CART = gql`
   mutation CreateOrderFromCart($input: CreateOrderFromCartInput!) {
     createOrderFromCart(input: $input) {
-      id
-      totalMinor
-      currency
-      status
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      order {
         id
-        email
-      }
-      items {
-        id
-        qty
-        unitPriceMinor
+        totalMinor
         currency
-        product {
+        status
+        createdAt
+        updatedAt
+        user {
           id
-          name
-          slug
-          priceMinor
+          email
+        }
+        items {
+          id
+          qty
+          unitPriceMinor
           currency
-          stockQty
-          category {
+          product {
             id
             name
             slug
+            priceMinor
+            currency
+            stockQty
+            category {
+              id
+              name
+              slug
+            }
           }
         }
       }

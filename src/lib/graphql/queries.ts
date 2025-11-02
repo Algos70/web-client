@@ -552,32 +552,36 @@ export const GET_USER_WALLET_BALANCE = gql`
 export const GET_USER_ORDERS = gql`
   query GetUserOrders {
     userOrders {
-      id
-      totalMinor
-      currency
-      status
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      orders {
         id
-        email
-      }
-      items {
-        id
-        qty
-        unitPriceMinor
+        totalMinor
         currency
-        product {
+        status
+        createdAt
+        updatedAt
+        user {
           id
-          name
-          slug
-          priceMinor
+          email
+        }
+        items {
+          id
+          qty
+          unitPriceMinor
           currency
-          stockQty
-          category {
+          product {
             id
             name
             slug
+            priceMinor
+            currency
+            stockQty
+            category {
+              id
+              name
+              slug
+            }
           }
         }
       }

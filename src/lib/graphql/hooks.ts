@@ -84,6 +84,8 @@ import type {
   UserTransferInput,
   Order,
   CreateOrderFromCartInput,
+  UserOrdersResponse,
+  CreateOrderFromCartResponse,
   AuthUser,
   AuthResponse,
   RegisterResponse,
@@ -453,14 +455,12 @@ export const useTransferFromUserWallet = () => {
 };
 // Order hooks
 export const useUserOrders = () => {
-  return useQuery<{ userOrders: Order[] }>(GET_USER_ORDERS);
+  return useQuery<{ userOrders: UserOrdersResponse }>(GET_USER_ORDERS);
 };
-
-
 
 export const useCreateOrderFromCart = () => {
   return useMutation<
-    { createOrderFromCart: Order },
+    { createOrderFromCart: CreateOrderFromCartResponse },
     { input: CreateOrderFromCartInput }
   >(CREATE_ORDER_FROM_CART, {
     refetchQueries: [{ query: GET_USER_CART }, { query: GET_USER_ORDERS }],

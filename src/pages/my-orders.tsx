@@ -17,7 +17,7 @@ export default function MyOrders() {
     error: ordersError,
   } = useUserOrders();
 
-  const orders = ordersData?.userOrders || [];
+  const orders = ordersData?.userOrders?.orders || [];
 
   if (ordersLoading) {
     return <OrdersLoadingState />;
