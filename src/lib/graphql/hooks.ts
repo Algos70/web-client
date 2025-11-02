@@ -69,6 +69,7 @@ import type {
   Wallet,
   BalanceResponse,
   TransferResponse,
+  UserWalletResult,
   CreateUserWalletInput,
   BalanceOperationInput,
   UserTransferInput,
@@ -362,7 +363,7 @@ export const useUserWalletBalance = (currency: string) => {
 
 export const useCreateUserWallet = () => {
   return useMutation<
-    { createUserWallet: Wallet },
+    { createUserWallet: UserWalletResult },
     { input: CreateUserWalletInput }
   >(CREATE_USER_WALLET, {
     refetchQueries: [{ query: GET_USER_WALLETS }],

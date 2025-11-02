@@ -269,6 +269,12 @@ export interface TransferResponse {
   message: string;
 }
 
+export interface UserWalletResult {
+  success: boolean;
+  message: string;
+  wallet: Wallet | null;
+}
+
 // Wallet Input Types
 export interface CreateWalletInput {
   userId: string;

@@ -68,12 +68,19 @@ export function useWalletOperations(wallets: Wallet[]) {
 
       if (result.error) {
         handleError(result.error, "Failed to create wallet");
-      } else {
-        setShowCreateForm(false);
-        setNewWalletCurrency("USD");
-        toast.success("Wallet created successfully!", {
-          className: 'wallet-success-toast'
-        });
+      } else if (result.data?.createUserWallet) {
+        const { success, message } = result.data.createUserWallet;
+        if (success) {
+          setShowCreateForm(false);
+          setNewWalletCurrency("USD");
+          toast.success(message || "Wallet created successfully!", {
+            className: 'wallet-success-toast'
+          });
+        } else {
+          toast.error(message || "Failed to create wallet", {
+            className: 'wallet-error-toast'
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error creating wallet:", error);

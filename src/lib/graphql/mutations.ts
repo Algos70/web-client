@@ -262,14 +262,18 @@ export const DECREASE_ITEM_QUANTITY = gql`
 export const CREATE_USER_WALLET = gql`
   mutation CreateUserWallet($input: CreateUserWalletInput!) {
     createUserWallet(input: $input) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      wallet {
         id
-        email
+        currency
+        balanceMinor
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+        }
       }
     }
   }
