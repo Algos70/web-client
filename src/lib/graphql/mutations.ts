@@ -282,15 +282,8 @@ export const CREATE_USER_WALLET = gql`
 export const INCREASE_USER_WALLET_BALANCE = gql`
   mutation IncreaseUserWalletBalance($walletId: ID!, $input: BalanceOperationInput!) {
     increaseUserWalletBalance(walletId: $walletId, input: $input) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
-        id
-        email
-      }
+      success
+      message
     }
   }
 `;

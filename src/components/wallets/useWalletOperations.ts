@@ -142,12 +142,19 @@ export function useWalletOperations(wallets: Wallet[]) {
 
       if (result.error) {
         handleError(result.error, "Failed to add funds");
-      } else {
-        setShowAddFundsModal(null);
-        setAddFundsAmount("");
-        toast.success("Funds added successfully!", {
-          className: 'wallet-success-toast'
-        });
+      } else if (result.data?.increaseUserWalletBalance) {
+        const { success, message } = result.data.increaseUserWalletBalance;
+        if (success) {
+          setShowAddFundsModal(null);
+          setAddFundsAmount("");
+          toast.success(message || "Funds added successfully!", {
+            className: 'wallet-success-toast'
+          });
+        } else {
+          toast.error(message || "Failed to add funds", {
+            className: 'wallet-error-toast'
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error adding funds:", error);

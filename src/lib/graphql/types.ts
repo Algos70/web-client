@@ -275,6 +275,17 @@ export interface UserWalletResult {
   wallet: Wallet | null;
 }
 
+export interface UserWalletBalanceResult {
+  success: boolean;
+  message: string;
+  balance: number;
+}
+
+export interface UserWalletOperationResult {
+  success: boolean;
+  message: string;
+}
+
 // Wallet Input Types
 export interface CreateWalletInput {
   userId: string;

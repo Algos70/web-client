@@ -530,9 +530,9 @@ export const GET_USER_WALLET_BY_CURRENCY = gql`
 export const GET_USER_WALLET_BALANCE = gql`
   query GetUserWalletBalance($currency: String!) {
     userWalletBalance(currency: $currency) {
-      balanceMinor
-      currency
-      userId
+      success
+      message
+      balance
     }
   }
 `;
