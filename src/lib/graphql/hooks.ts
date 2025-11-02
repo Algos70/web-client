@@ -23,7 +23,6 @@ import {
   GET_USER_WALLET_BY_CURRENCY,
   GET_USER_WALLET_BALANCE,
   GET_USER_ORDERS,
-  GET_USER_ORDER,
   GET_ME,
 } from "./queries";
 import {
@@ -457,12 +456,7 @@ export const useUserOrders = () => {
   return useQuery<{ userOrders: Order[] }>(GET_USER_ORDERS);
 };
 
-export const useUserOrder = (id: string) => {
-  return useQuery<{ userOrder: Order }>(GET_USER_ORDER, {
-    variables: { id },
-    skip: !id,
-  });
-};
+
 
 export const useCreateOrderFromCart = () => {
   return useMutation<
