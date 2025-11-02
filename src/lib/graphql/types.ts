@@ -286,6 +286,24 @@ export interface UserWalletOperationResult {
   message: string;
 }
 
+// Cart Response Types
+export interface UserCartResponse {
+  success: boolean;
+  message: string;
+  cartItems: CartItem[];
+}
+
+export interface CartItemResponse {
+  success: boolean;
+  message: string;
+  cartItem: CartItem;
+}
+
+export interface CartOperationResponse {
+  success: boolean;
+  message: string;
+}
+
 // Wallet Input Types
 export interface CreateWalletInput {
   userId: string;

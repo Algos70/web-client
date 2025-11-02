@@ -460,8 +460,9 @@ export const GET_CATEGORY_PRODUCTS = gql`
 export const GET_USER_CART = gql`
   query GetUserCart {
     userCart {
-      id
-      items {
+      success
+      message
+      cartItems {
         id
         qty
         createdAt
@@ -480,8 +481,6 @@ export const GET_USER_CART = gql`
           }
         }
       }
-      createdAt
-      updatedAt
     }
   }
 `;

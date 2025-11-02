@@ -26,7 +26,7 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const cart = cartData?.userCart;
-  const items = cart?.items || [];
+  const items = cart?.success ? cart.cartItems : [];
   const walletsResult = walletsData?.userWallets;
   const wallets = walletsResult?.wallets || [];
 

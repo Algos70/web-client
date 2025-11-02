@@ -66,12 +66,13 @@ import type {
   AddItemToCartInput,
   UpdateItemQuantityInput,
   DecreaseItemQuantityInput,
-  Wallet,
-  BalanceResponse,
   TransferResponse,
   UserWalletResult,
   UserWalletBalanceResult,
   UserWalletOperationResult,
+  UserCartResponse,
+  CartItemResponse,
+  CartOperationResponse,
   CreateUserWalletInput,
   BalanceOperationInput,
   UserTransferInput,
@@ -293,11 +294,11 @@ export const useSearchProducts = (
 
 // Cart hooks
 export const useUserCart = () => {
-  return useQuery<{ userCart: Cart }>(GET_USER_CART);
+  return useQuery<{ userCart: UserCartResponse }>(GET_USER_CART);
 };
 
 export const useAddItemToCart = () => {
-  return useMutation<{ addItemToCart: Cart }, { input: AddItemToCartInput }>(
+  return useMutation<{ addItemToCart: CartItemResponse }, { input: AddItemToCartInput }>(
     ADD_ITEM_TO_CART,
     {
       refetchQueries: [{ query: GET_USER_CART }],
@@ -306,7 +307,7 @@ export const useAddItemToCart = () => {
 };
 
 export const useRemoveItemFromCart = () => {
-  return useMutation<{ removeItemFromCart: Cart }, { productId: string }>(
+  return useMutation<{ removeItemFromCart: CartItemResponse }, { productId: string }>(
     REMOVE_ITEM_FROM_CART,
     {
       refetchQueries: [{ query: GET_USER_CART }],
@@ -315,14 +316,14 @@ export const useRemoveItemFromCart = () => {
 };
 
 export const useClearCart = () => {
-  return useMutation<{ clearCart: Cart }>(CLEAR_CART, {
+  return useMutation<{ clearCart: CartOperationResponse }>(CLEAR_CART, {
     refetchQueries: [{ query: GET_USER_CART }],
   });
 };
 
 export const useUpdateItemQuantity = () => {
   return useMutation<
-    { updateItemQuantity: Cart },
+    { updateItemQuantity: CartOperationResponse },
     { input: UpdateItemQuantityInput }
   >(UPDATE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],
@@ -331,7 +332,7 @@ export const useUpdateItemQuantity = () => {
 
 export const useDecreaseItemQuantity = () => {
   return useMutation<
-    { decreaseItemQuantity: Cart },
+    { decreaseItemQuantity: CartOperationResponse },
     { input: DecreaseItemQuantityInput }
   >(DECREASE_ITEM_QUANTITY, {
     refetchQueries: [{ query: GET_USER_CART }],

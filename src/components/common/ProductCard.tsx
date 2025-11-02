@@ -49,11 +49,19 @@ export default function ProductCard({ product }: ProductCardProps) {
             className: 'product-error-toast'
           });
         }
-      } else {
-        toast.success("Product added to cart successfully!", { 
-          id: `product-success-${product.id}`,
-          className: 'product-success-toast'
-        });
+      } else if (result.data?.addItemToCart) {
+        const { success, message } = result.data.addItemToCart;
+        if (success) {
+          toast.success(message || "Product added to cart successfully!", { 
+            id: `product-success-${product.id}`,
+            className: 'product-success-toast'
+          });
+        } else {
+          toast.error(message || "Failed to add product to cart", { 
+            id: `product-fail-${product.id}`,
+            className: 'product-error-toast'
+          });
+        }
       }
     } catch (error: any) {
       console.error("Error adding item to cart:", error);

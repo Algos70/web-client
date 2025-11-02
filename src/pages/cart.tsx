@@ -27,13 +27,17 @@ export default function CartPage() {
   const [showClearModal, setShowClearModal] = useState(false);
 
   const cart = cartData?.userCart;
-  const items = cart?.items || [];
+  const items = cart?.success ? cart.cartItems : [];
 
   const handleClearCart = async () => {
     setIsClearing(true);
     try {
-      await clearCart();
-      setShowClearModal(false);
+      const result = await clearCart();
+      if (result.data?.clearCart?.success) {
+        setShowClearModal(false);
+      } else {
+        console.error("Failed to clear cart:", result.data?.clearCart?.message);
+      }
     } catch (error) {
       console.error("Error clearing cart:", error);
     } finally {
