@@ -93,6 +93,9 @@ jobs:
         run: npm run build
 
       - name: Start frontend server
+        env:
+          NEXT_PUBLIC_GRAPHQL_ENDPOINT: http://localhost:4000/graphql
+          GRAPHQL_ENDPOINT_SSR: http://localhost:4000/graphql
         run: nohup npm run start &
 
       # ✅ Backend & Frontend hazır olana kadar bekle
