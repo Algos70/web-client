@@ -372,7 +372,10 @@ export const useDecreaseItemQuantity = () => {
 
 // Wallet hooks
 export const useUserWallets = () => {
-  return useQuery<{ userWallets: UserWalletsResult }>(GET_USER_WALLETS);
+  return useQuery<{ userWallets: UserWalletsResult }>(GET_USER_WALLETS, {
+    fetchPolicy: "cache-and-network", // Always fetch fresh data while showing cached data first
+    notifyOnNetworkStatusChange: true, // Show loading state when refetching
+  });
 };
 
 export const useUserWalletByCurrency = (currency: string) => {

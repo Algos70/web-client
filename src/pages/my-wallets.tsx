@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import Head from "next/head";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import WalletPageHeader from "../components/wallet/WalletPageHeader";
@@ -17,10 +17,16 @@ export default function MyWalletsPage() {
     data: walletsData,
     loading: walletsLoading,
     error: walletsError,
+    refetch: refetchWallets,
   } = useUserWallets();
 
   const walletsResult = walletsData?.userWallets;
   const wallets = walletsResult?.wallets || [];
+
+  // Refetch wallets when component mounts to ensure fresh data
+  useEffect(() => {
+    refetchWallets();
+  }, [refetchWallets]);
 
   // Handle UserWalletsResult error states
   if (walletsResult && !walletsResult.success) {
