@@ -1,5 +1,5 @@
 import React from "react";
-import type { Category } from "../../../lib/graphql/types";
+import type { Category, UpdateCategoryInput } from "../../../lib/graphql/types";
 import CategoryForm from "./CategoryForm";
 
 interface CategoryTableProps {
@@ -7,7 +7,7 @@ interface CategoryTableProps {
   editingCategory: Category | null;
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
-  onUpdate: (id: string, input: any) => void;
+  onUpdate: (id: string, input: UpdateCategoryInput) => void;
   onCancelEdit: () => void;
   updating: boolean;
   deleting: boolean;

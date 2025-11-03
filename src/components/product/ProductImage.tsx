@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface ProductImageProps {
   productName: string;
   imageUrl?: string;
@@ -8,11 +10,13 @@ export default function ProductImage({
   imageUrl = "/images/placeholder-img.png" 
 }: ProductImageProps) {
   return (
-    <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center w-4/5 mx-auto">
-      <img
+    <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center w-4/5 mx-auto relative">
+      <Image
         src={imageUrl}
         alt={productName}
-        className="max-w-full max-h-full object-contain p-4"
+        fill
+        className="object-contain p-4"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
     </div>
   );

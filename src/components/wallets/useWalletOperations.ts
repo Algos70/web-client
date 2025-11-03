@@ -37,20 +37,11 @@ export function useWalletOperations(wallets: Wallet[]) {
   const [increaseUserWalletBalance, { loading: increaseLoading }] = useIncreaseUserWalletBalance();
   const [transferFromUserWallet, { loading: transferLoading }] = useTransferFromUserWallet();
 
-  const handleError = (error: any, defaultMessage: string) => {
-    if (error.errors && error.errors.length > 0) {
-      toast.error(error.errors[0].message, {
-        className: 'wallet-error-toast'
-      });
-    } else if (error.networkError) {
-      toast.error("Network error occurred. Please try again.", {
-        className: 'wallet-error-toast'
-      });
-    } else {
-      toast.error(defaultMessage, {
-        className: 'wallet-error-toast'
-      });
-    }
+  const handleError = (error: unknown, defaultMessage: string) => {
+    const errorMessage = error instanceof Error ? error.message : defaultMessage;
+    toast.error(errorMessage, {
+      className: 'wallet-error-toast'
+    });
   };
 
   const handleCreateWallet = async (e: React.FormEvent) => {
@@ -82,7 +73,7 @@ export function useWalletOperations(wallets: Wallet[]) {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating wallet:", error);
       handleError(error, "Failed to create wallet");
     }
@@ -112,7 +103,7 @@ export function useWalletOperations(wallets: Wallet[]) {
         });
       }
       setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error deleting wallet:", error);
       handleError(error, "Failed to delete wallet");
       setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
@@ -156,7 +147,7 @@ export function useWalletOperations(wallets: Wallet[]) {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding funds:", error);
       handleError(error, "Failed to add funds");
     }
@@ -197,7 +188,7 @@ export function useWalletOperations(wallets: Wallet[]) {
           className: 'wallet-success-toast'
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error transferring funds:", error);
       handleError(error, "Failed to transfer funds");
     }

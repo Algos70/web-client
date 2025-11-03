@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { Product } from "../../lib/graphql/types";
 import { useAddItemToCart } from "../../lib/graphql/hooks";
@@ -31,24 +32,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       // Check if there are GraphQL errors in the result
       if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage, { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.", { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        } else {
-          toast.error("An error occurred while adding item to cart.", { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        }
+        const errorMessage = result.error.message || "An error occurred while adding item to cart.";
+        toast.error(errorMessage, { 
+          id: `product-fail-${product.id}`,
+          className: 'product-error-toast'
+        });
       } else if (result.data?.addItemToCart) {
         const { success, message } = result.data.addItemToCart;
         if (success) {
@@ -63,21 +51,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding item to cart:", error);
-
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.", { 
-          id: `product-fail-${product.id}`,
-          className: 'product-error-toast'
-        });
-      } else {
-        toast.error("An error occurred while adding item to cart.", { 
-          id: `product-fail-${product.id}`,
-          className: 'product-error-toast'
-        });
-      }
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while adding item to cart.";
+      toast.error(errorMessage, { 
+        id: `product-fail-${product.id}`,
+        className: 'product-error-toast'
+      });
     }
   };
 
@@ -87,11 +67,15 @@ export default function ProductCard({ product }: ProductCardProps) {
       className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleCardClick}
     >
-      <img
-        src="/images/placeholder-img.png"
-        alt={product.name}
-        className="w-full h-48 object-fit bg-gray-100"
-      />
+      <div className="relative w-full h-48 bg-gray-100">
+        <Image
+          src="/images/placeholder-img.png"
+          alt={product.name}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
       <div className="p-4">
         {product.category && (
           <span className="text-sm text-blue-600 font-medium">

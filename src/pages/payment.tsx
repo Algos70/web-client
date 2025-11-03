@@ -103,21 +103,10 @@ export default function PaymentPage() {
 
       // Check if there are GraphQL errors in the result
       if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage, {
-            className: 'order-error-toast'
-          });
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.", {
-            className: 'order-error-toast'
-          });
-        } else {
-          toast.error("An error occurred while creating the order.", {
-            className: 'order-error-toast'
-          });
-        }
+        const errorMessage = result.error.message || "An error occurred while creating the order.";
+        toast.error(errorMessage, {
+          className: 'order-error-toast'
+        });
       } else if (result.data?.createOrderFromCart?.success) {
         toast.success(result.data.createOrderFromCart.message || "Order placed successfully!", {
           className: 'order-success-toast'
@@ -129,18 +118,12 @@ export default function PaymentPage() {
           className: 'order-error-toast'
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating order:", error);
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.", {
-          className: 'order-error-toast'
-        });
-      } else {
-        toast.error("Failed to create order. Please try again.", {
-          className: 'order-error-toast'
-        });
-      }
+      const errorMessage = error instanceof Error ? error.message : "Failed to create order. Please try again.";
+      toast.error(errorMessage, {
+        className: 'order-error-toast'
+      });
     } finally {
       setIsProcessing(false);
     }

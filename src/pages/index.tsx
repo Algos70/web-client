@@ -7,10 +7,11 @@ import CategoriesSection from "../components/common/CategoriesSection";
 import StatsSection from "../components/common/StatsSection";
 import { GET_FEATURED_PRODUCTS, GET_CATEGORIES } from "../lib/graphql/queries";
 import { createSSRHandler } from "../lib/utils/ssr";
+import { ProductsResult, CategoriesResponse } from "../lib/graphql/types";
 
 interface HomeProps {
-  featuredProductsData?: any;
-  categoriesData?: any;
+  featuredProductsData?: ProductsResult;
+  categoriesData?: CategoriesResponse;
 }
 
 export default function Home({ featuredProductsData, categoriesData }: HomeProps) {

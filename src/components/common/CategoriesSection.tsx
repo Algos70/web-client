@@ -11,7 +11,10 @@ interface CategoriesSectionProps {
 }
 
 export default function CategoriesSection({ initialData }: CategoriesSectionProps) {
-  const { data, loading, error } = useCategories(1, 6);
+  // Skip client-side query if we have SSR data
+  const { data, loading, error } = useCategories(1, 6, {
+    skip: !!initialData
+  });
 
   // Use SSR data if available, otherwise use client data
   const categoriesData = initialData || (data?.categories?.success ? data.categories : null);

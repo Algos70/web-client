@@ -63,7 +63,6 @@ import type {
   StockOperationInput,
   PriceUpdateInput,
   StockCheckResult,
-  Cart,
   AddItemToCartInput,
   UpdateItemQuantityInput,
   DecreaseItemQuantityInput,
@@ -80,7 +79,6 @@ import type {
   CreateUserWalletInput,
   BalanceOperationInput,
   UserTransferInput,
-  Order,
   CreateOrderFromCartInput,
   UserOrdersResponse,
   CreateOrderFromCartResponse,
@@ -148,12 +146,13 @@ export const useDeleteCategory = () => {
 export const useCategories = (
   page: number = 1,
   limit: number = 10,
-  search?: string
+  options?: { search?: string; skip?: boolean }
 ) => {
   return useQuery<{ categories: CategoriesResponse }>(
     GET_CATEGORIES,
     {
-      variables: { page, limit, search },
+      variables: { page, limit, search: options?.search },
+      skip: options?.skip,
     }
   );
 };

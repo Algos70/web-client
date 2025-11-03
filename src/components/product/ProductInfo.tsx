@@ -28,24 +28,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       // Check if there are GraphQL errors in the result
       if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage, { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.", { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        } else {
-          toast.error("An error occurred while adding item to cart.", { 
-            id: `product-fail-${product.id}`,
-            className: 'product-error-toast'
-          });
-        }
+        const errorMessage = result.error.message || "An error occurred while adding item to cart.";
+        toast.error(errorMessage, { 
+          id: `product-fail-${product.id}`,
+          className: 'product-error-toast'
+        });
       } else if (result.data?.addItemToCart) {
         const { success, message } = result.data.addItemToCart;
         if (success) {
@@ -60,21 +47,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding item to cart:", error);
-
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.", { 
-          id: `product-fail-${product.id}`,
-          className: 'product-error-toast'
-        });
-      } else {
-        toast.error("An error occurred while adding item to cart.", { 
-          id: `product-fail-${product.id}`,
-          className: 'product-error-toast'
-        });
-      }
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while adding item to cart.";
+      toast.error(errorMessage, { 
+        id: `product-fail-${product.id}`,
+        className: 'product-error-toast'
+      });
     }
   };
 

@@ -7,7 +7,7 @@ import ProductBreadcrumb from "../../components/product/ProductBreadcrumb";
 import ProductDetailLayout from "../../components/product/ProductDetailLayout";
 import ErrorPage from "../../components/common/ErrorPage";
 import { GET_PRODUCT_BY_SLUG } from "../../lib/graphql/queries";
-import { Product, ProductResult } from "../../lib/graphql/types";
+import { ProductResult } from "../../lib/graphql/types";
 import { createSSRHandler, extractSlug } from "../../lib/utils/ssr";
 
 interface ProductQueryResponse {
