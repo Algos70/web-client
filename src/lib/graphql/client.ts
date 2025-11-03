@@ -7,9 +7,11 @@ let apolloClient: ApolloClient | undefined;
 
 // Unified Apollo Client creation with optional headers
 function createApolloClient(headers?: Record<string, string>) {
-  const graphqlUrl =
-    process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT ||
-    "http://localhost:4000/graphql";
+  // Use different URLs for SSR vs client-side
+  const isSSR = typeof window === "undefined";
+  const graphqlUrl = isSSR
+    ? process.env.GRAPHQL_ENDPOINT_SSR || "http://monolith-api:4000/graphql"
+    : process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || "http://localhost:4000/graphql";
 
   return new ApolloClient({
     ssrMode: typeof window === "undefined",
