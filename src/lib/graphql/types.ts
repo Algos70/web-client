@@ -175,6 +175,8 @@ export interface PriceUpdateInput {
 }
 
 export interface ProductConnection {
+  success: boolean;
+  message: string;
   products: Product[];
   pagination: Pagination;
 }
@@ -184,12 +186,7 @@ export interface StockCheckResult {
   requiredQty: number;
 }
 
-export interface ProductAvailability {
-  productId: string;
-  available: boolean;
-  requiredQty: number;
-  stockQty: number;
-}
+
 
 // New type for category products result
 export interface CategoryProductsResult {
@@ -197,6 +194,12 @@ export interface CategoryProductsResult {
   products: Product[];
   pagination: Pagination;
 }
+
+export interface ProductResult {
+    success: boolean;
+    message: string;
+    product: Product;
+  }
 
 // Cart input types
 export interface CreateCartInput {
@@ -228,6 +231,18 @@ export interface DecreaseItemQuantityInput {
   decreaseBy?: number;
 }
 
+ export interface ProductsResult {
+    success: boolean;
+    message: string;
+    products: Product[];
+  }
+
+export interface UserWalletsResult {
+  success: boolean;
+  message: string;
+  wallets: Wallet[];
+}
+
 // Wallet Types
 export interface Wallet {
   id: string;
@@ -252,6 +267,63 @@ export interface BalanceResponse {
 export interface TransferResponse {
   success: boolean;
   message: string;
+}
+
+export interface UserWalletResult {
+  success: boolean;
+  message: string;
+  wallet: Wallet | null;
+}
+
+export interface UserWalletBalanceResult {
+  success: boolean;
+  message: string;
+  balance: number;
+}
+
+export interface UserWalletOperationResult {
+  success: boolean;
+  message: string;
+}
+
+// Cart Response Types
+export interface UserCartResponse {
+  success: boolean;
+  message: string;
+  cartItems: CartItem[];
+}
+
+export interface CartItemResponse {
+  success: boolean;
+  message: string;
+  cartItem: CartItem;
+}
+
+export interface CartOperationResponse {
+  success: boolean;
+  message: string;
+}
+
+// Category Response Types
+export interface CategoryResponse {
+  success: boolean;
+  message: string;
+  category: Category;
+}
+
+export interface CategoriesResponse {
+  success: boolean;
+  message: string;
+  categories: Category[];
+  pagination: Pagination;
+}
+
+export interface CategoryProductsResponse {
+  success: boolean;
+  message: string;
+  category: Category;
+  products: Product[];
+  pagination: Pagination;
 }
 
 // Wallet Input Types
@@ -315,4 +387,17 @@ export interface UpdateOrderStatusInput {
 export interface OrderConnection {
   orders: Order[];
   pagination: Pagination;
+}
+
+// Order Response Types
+export interface UserOrdersResponse {
+  success: boolean;
+  message: string;
+  orders: Order[];
+}
+
+export interface CreateOrderFromCartResponse {
+  success: boolean;
+  message: string;
+  order: Order | null;
 }

@@ -45,9 +45,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         return { success: false, error: "Login failed" };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login failed:", error);
-      const errorMessage = error.graphQLErrors?.[0]?.message || error.message || "Network error occurred";
+      const errorMessage = error instanceof Error ? error.message : "Network error occurred";
       return { success: false, error: errorMessage };
     }
   };
@@ -71,9 +71,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         return { success: false, error: "Registration failed" };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration failed:", error);
-      const errorMessage = error.graphQLErrors?.[0]?.message || error.message || "Network error occurred";
+      const errorMessage = error instanceof Error ? error.message : "Network error occurred";
       return { success: false, error: errorMessage };
     }
   };

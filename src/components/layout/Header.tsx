@@ -6,7 +6,8 @@ import { useUserCart } from "@/lib/graphql/hooks";
 
 export default function Header() {
   const { data: cartData } = useUserCart();
-  const itemCount = cartData?.userCart?.items?.reduce((total, item) => total + item.qty, 0) || 0;
+  const cartItems = cartData?.userCart?.success ? cartData.userCart.cartItems : [];
+  const itemCount = cartItems.reduce((total, item) => total + item.qty, 0);
 
   return (
     <header className="bg-white shadow-sm border-b border-slate-200">
@@ -16,6 +17,7 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             <UserMenu />
             <Link
+              id="cart-button"
               href="/cart"
               className="relative p-2 text-slate-600 hover:text-slate-900 transition-colors"
             >

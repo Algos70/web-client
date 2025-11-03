@@ -20,7 +20,7 @@ const AddFundsModal: React.FC<AddFundsModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+    <div id="add-funds-modal" className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
         <h3 className="text-xl font-bold mb-4">Add Funds</h3>
         <form onSubmit={onSubmit}>
@@ -29,6 +29,7 @@ const AddFundsModal: React.FC<AddFundsModalProps> = ({
               Amount
             </label>
             <input
+              id="amount-input"
               type="number"
               value={amount}
               onChange={(e) => onAmountChange(e.target.value)}
@@ -48,6 +49,7 @@ const AddFundsModal: React.FC<AddFundsModalProps> = ({
               Cancel
             </button>
             <button
+              id='add-funds-button'
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover:cursor-pointer transition-colors disabled:opacity-50"

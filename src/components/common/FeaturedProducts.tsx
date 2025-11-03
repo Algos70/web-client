@@ -4,10 +4,11 @@ import ErrorSection from "./ErrorSection";
 import SectionHeader from "./SectionHeader";
 import ProductGrid from "./ProductGrid";
 import { useRouter } from "next/router";
+import { ProductsResult } from "../../lib/graphql/types";
 
 interface FeaturedProductsProps {
   limit?: number;
-  initialData?: any; // SSR data
+  initialData?: ProductsResult; // SSR data
 }
 
 export default function FeaturedProducts({ limit = 8, initialData }: FeaturedProductsProps) {

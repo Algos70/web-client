@@ -116,8 +116,9 @@ export const UPDATE_PRODUCT_PRICE = gql`
 export const ADD_ITEM_TO_CART = gql`
   mutation AddItemToCart($input: AddItemToCartInput!) {
     addItemToCart(input: $input) {
-      id
-      items {
+      success
+      message
+      cartItem {
         id
         qty
         createdAt
@@ -136,8 +137,6 @@ export const ADD_ITEM_TO_CART = gql`
           }
         }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -145,8 +144,9 @@ export const ADD_ITEM_TO_CART = gql`
 export const REMOVE_ITEM_FROM_CART = gql`
   mutation RemoveItemFromCart($productId: ID!) {
     removeItemFromCart(productId: $productId) {
-      id
-      items {
+      success
+      message
+      cartItem {
         id
         qty
         createdAt
@@ -165,8 +165,6 @@ export const REMOVE_ITEM_FROM_CART = gql`
           }
         }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -174,28 +172,8 @@ export const REMOVE_ITEM_FROM_CART = gql`
 export const CLEAR_CART = gql`
   mutation ClearCart {
     clearCart {
-      id
-      items {
-        id
-        qty
-        createdAt
-        updatedAt
-        product {
-          id
-          name
-          slug
-          priceMinor
-          currency
-          stockQty
-          category {
-            id
-            name
-            slug
-          }
-        }
-      }
-      createdAt
-      updatedAt
+      success
+      message
     }
   }
 `;
@@ -203,28 +181,8 @@ export const CLEAR_CART = gql`
 export const UPDATE_ITEM_QUANTITY = gql`
   mutation UpdateItemQuantity($input: UpdateItemQuantityInput!) {
     updateItemQuantity(input: $input) {
-      id
-      items {
-        id
-        qty
-        createdAt
-        updatedAt
-        product {
-          id
-          name
-          slug
-          priceMinor
-          currency
-          stockQty
-          category {
-            id
-            name
-            slug
-          }
-        }
-      }
-      createdAt
-      updatedAt
+      success
+      message
     }
   }
 `;
@@ -232,28 +190,8 @@ export const UPDATE_ITEM_QUANTITY = gql`
 export const DECREASE_ITEM_QUANTITY = gql`
   mutation DecreaseItemQuantity($input: DecreaseItemQuantityInput!) {
     decreaseItemQuantity(input: $input) {
-      id
-      items {
-        id
-        qty
-        createdAt
-        updatedAt
-        product {
-          id
-          name
-          slug
-          priceMinor
-          currency
-          stockQty
-          category {
-            id
-            name
-            slug
-          }
-        }
-      }
-      createdAt
-      updatedAt
+      success
+      message
     }
   }
 `;
@@ -262,14 +200,18 @@ export const DECREASE_ITEM_QUANTITY = gql`
 export const CREATE_USER_WALLET = gql`
   mutation CreateUserWallet($input: CreateUserWalletInput!) {
     createUserWallet(input: $input) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      wallet {
         id
-        email
+        currency
+        balanceMinor
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+        }
       }
     }
   }
@@ -278,15 +220,8 @@ export const CREATE_USER_WALLET = gql`
 export const INCREASE_USER_WALLET_BALANCE = gql`
   mutation IncreaseUserWalletBalance($walletId: ID!, $input: BalanceOperationInput!) {
     increaseUserWalletBalance(walletId: $walletId, input: $input) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
-        id
-        email
-      }
+      success
+      message
     }
   }
 `;
@@ -309,32 +244,36 @@ export const TRANSFER_FROM_USER_WALLET = gql`
 export const CREATE_ORDER_FROM_CART = gql`
   mutation CreateOrderFromCart($input: CreateOrderFromCartInput!) {
     createOrderFromCart(input: $input) {
-      id
-      totalMinor
-      currency
-      status
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      order {
         id
-        email
-      }
-      items {
-        id
-        qty
-        unitPriceMinor
+        totalMinor
         currency
-        product {
+        status
+        createdAt
+        updatedAt
+        user {
           id
-          name
-          slug
-          priceMinor
+          email
+        }
+        items {
+          id
+          qty
+          unitPriceMinor
           currency
-          stockQty
-          category {
+          product {
             id
             name
             slug
+            priceMinor
+            currency
+            stockQty
+            category {
+              id
+              name
+              slug
+            }
           }
         }
       }

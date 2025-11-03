@@ -121,18 +121,22 @@ export const GET_ADMIN_PRODUCT = gql`
 export const GET_ADMIN_PRODUCT_BY_SLUG = gql`
   query GetAdminProductBySlug($slug: String!) {
     adminProductBySlug(slug: $slug) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      product {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
@@ -141,18 +145,22 @@ export const GET_ADMIN_PRODUCT_BY_SLUG = gql`
 export const GET_ADMIN_PRODUCTS_BY_CATEGORY = gql`
   query GetAdminProductsByCategory($categoryId: ID!) {
     adminProductsByCategory(categoryId: $categoryId) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      products {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
@@ -231,53 +239,28 @@ export const GET_PRODUCT = gql`
 export const GET_PRODUCT_BY_SLUG = gql`
   query GetProductBySlug($slug: String!) {
     productBySlug(slug: $slug) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
+      success
+      message
+      product {
         id
         name
         slug
+        priceMinor
+        currency
+        stockQty
+        createdAt
+        updatedAt
+        category {
+          id
+          name
+          slug
+        }
       }
     }
   }
 `;
 
-export const GET_PRODUCTS_BY_CATEGORY = gql`
-  query GetProductsByCategory($categoryId: ID!) {
-    productsByCategory(categoryId: $categoryId) {
-      id
-      name
-      slug
-      priceMinor
-      currency
-      stockQty
-      createdAt
-      updatedAt
-      category {
-        id
-        name
-        slug
-      }
-    }
-  }
-`;
 
-export const GET_PRODUCT_AVAILABILITY = gql`
-  query GetProductAvailability($id: ID!, $qty: Int = 1) {
-    productAvailability(id: $id, qty: $qty) {
-      productId
-      available
-      requiredQty
-      stockQty
-    }
-  }
-`;
 
 export const GET_FEATURED_PRODUCTS = gql`
   query GetFeaturedProducts($limit: Int = 8) {
@@ -351,6 +334,8 @@ export const SEARCH_PRODUCTS = gql`
 export const GET_CATEGORIES = gql`
   query GetCategories($page: Int = 1, $limit: Int = 10, $search: String) {
     categories(page: $page, limit: $limit, search: $search) {
+      success
+      message
       categories {
         id
         slug
@@ -375,30 +360,18 @@ export const GET_CATEGORIES = gql`
 export const GET_CATEGORY = gql`
   query GetCategory($id: ID!) {
     category(id: $id) {
-      id
-      slug
-      name
-      createdAt
-      updatedAt
-      products {
+      success
+      message
+      category {
         id
+        slug
         name
-      }
-    }
-  }
-`;
-
-export const GET_CATEGORY_BY_SLUG = gql`
-  query GetCategoryBySlug($slug: String!) {
-    categoryBySlug(slug: $slug) {
-      id
-      slug
-      name
-      createdAt
-      updatedAt
-      products {
-        id
-        name
+        createdAt
+        updatedAt
+        products {
+          id
+          name
+        }
       }
     }
   }
@@ -417,6 +390,8 @@ export const GET_CATEGORY_PRODUCTS = gql`
       limit: $limit
       inStockOnly: $inStockOnly
     ) {
+      success
+      message
       category {
         id
         slug
@@ -453,8 +428,9 @@ export const GET_CATEGORY_PRODUCTS = gql`
 export const GET_USER_CART = gql`
   query GetUserCart {
     userCart {
-      id
-      items {
+      success
+      message
+      cartItems {
         id
         qty
         createdAt
@@ -473,8 +449,6 @@ export const GET_USER_CART = gql`
           }
         }
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -483,14 +457,18 @@ export const GET_USER_CART = gql`
 export const GET_USER_WALLETS = gql`
   query GetUserWallets {
     userWallets {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      wallets {
         id
-        email
+        currency
+        balanceMinor
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+        }
       }
     }
   }
@@ -499,14 +477,18 @@ export const GET_USER_WALLETS = gql`
 export const GET_USER_WALLET_BY_CURRENCY = gql`
   query GetUserWalletByCurrency($currency: String!) {
     userWalletByCurrency(currency: $currency) {
-      id
-      currency
-      balanceMinor
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      wallet {
         id
-        email
+        currency
+        balanceMinor
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+        }
       }
     }
   }
@@ -515,9 +497,9 @@ export const GET_USER_WALLET_BY_CURRENCY = gql`
 export const GET_USER_WALLET_BALANCE = gql`
   query GetUserWalletBalance($currency: String!) {
     userWalletBalance(currency: $currency) {
-      balanceMinor
-      currency
-      userId
+      success
+      message
+      balance
     }
   }
 `;
@@ -526,32 +508,36 @@ export const GET_USER_WALLET_BALANCE = gql`
 export const GET_USER_ORDERS = gql`
   query GetUserOrders {
     userOrders {
-      id
-      totalMinor
-      currency
-      status
-      createdAt
-      updatedAt
-      user {
+      success
+      message
+      orders {
         id
-        email
-      }
-      items {
-        id
-        qty
-        unitPriceMinor
+        totalMinor
         currency
-        product {
+        status
+        createdAt
+        updatedAt
+        user {
           id
-          name
-          slug
-          priceMinor
+          email
+        }
+        items {
+          id
+          qty
+          unitPriceMinor
           currency
-          stockQty
-          category {
+          product {
             id
             name
             slug
+            priceMinor
+            currency
+            stockQty
+            category {
+              id
+              name
+              slug
+            }
           }
         }
       }
@@ -559,41 +545,6 @@ export const GET_USER_ORDERS = gql`
   }
 `;
 
-export const GET_USER_ORDER = gql`
-  query GetUserOrder($id: ID!) {
-    userOrder(id: $id) {
-      id
-      totalMinor
-      currency
-      status
-      createdAt
-      updatedAt
-      user {
-        id
-        email
-      }
-      items {
-        id
-        qty
-        unitPriceMinor
-        currency
-        product {
-          id
-          name
-          slug
-          priceMinor
-          currency
-          stockQty
-          category {
-            id
-            name
-            slug
-          }
-        }
-      }
-    }
-  }
-`;
 
 // Authentication Queries
 export const GET_ME = gql`

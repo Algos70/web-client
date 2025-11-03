@@ -1,286 +1,82 @@
-import React, { useState, ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import Head from "next/head";
-import toast from "react-hot-toast";
 import AuthenticatedLayout from "../components/layouts/AuthenticatedLayout";
 import WalletPageHeader from "../components/wallet/WalletPageHeader";
-import CreateWalletModal from "../components/wallet/CreateWalletModal";
-import AddFundsModal from "../components/wallet/AddFundsModal";
-import TransferModal from "../components/wallet/TransferModal";
 import WalletGrid from "../components/wallet/WalletGrid";
 import EmptyWalletState from "../components/wallet/EmptyWalletState";
-import { toMinorUnits } from "../lib/utils/currency";
-
-import DeleteConfirmationModal from "../components/admin/modals/DeleteConfirmationModal";
 import {
-  useUserWallets,
-  useCreateUserWallet,
-  useDeleteUserWallet,
-  useIncreaseUserWalletBalance,
-  useTransferFromUserWallet,
-} from "../lib/graphql/hooks";
+  WalletsLoadingState,
+  WalletsErrorState,
+  WalletsModals,
+  useWalletOperations,
+} from "../components/wallets";
+import { useUserWallets } from "../lib/graphql/hooks";
 
 export default function MyWalletsPage() {
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [newWalletCurrency, setNewWalletCurrency] = useState("USD");
-  const [showAddFundsModal, setShowAddFundsModal] = useState<string | null>(
-    null
-  );
-  const [addFundsAmount, setAddFundsAmount] = useState("");
-  const [showTransferModal, setShowTransferModal] = useState<string | null>(null);
-  const [transferTargetWalletId, setTransferTargetWalletId] = useState("");
-  const [transferAmount, setTransferAmount] = useState("");
-  const [deleteModal, setDeleteModal] = useState<{
-    isOpen: boolean;
-    walletId: string;
-    walletCurrency: string;
-  }>({
-    isOpen: false,
-    walletId: "",
-    walletCurrency: "",
-  });
-
-  // Queries and Mutations
   const {
     data: walletsData,
     loading: walletsLoading,
     error: walletsError,
+    refetch: refetchWallets,
   } = useUserWallets();
-  const [createUserWallet, { loading: createLoading }] = useCreateUserWallet();
-  const [deleteUserWallet, { loading: deleteLoading }] = useDeleteUserWallet();
-  const [increaseUserWalletBalance, { loading: increaseLoading }] =
-    useIncreaseUserWalletBalance();
-  const [transferFromUserWallet, { loading: transferLoading }] =
-    useTransferFromUserWallet();
 
-  const handleCreateWallet = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await createUserWallet({
-        variables: {
-          input: {
-            currency: newWalletCurrency,
-            initialBalanceMinor: "0",
-          },
-        },
-        errorPolicy: "all",
-      });
+  const walletsResult = walletsData?.userWallets;
+  const wallets = walletsResult?.wallets || [];
 
-      // Check if there are GraphQL errors in the result
-      if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
-        } else {
-          toast.error("Failed to create wallet");
-        }
-      } else {
-        setShowCreateForm(false);
-        setNewWalletCurrency("USD");
-        toast.success("Wallet created successfully!");
-      }
-    } catch (error: any) {
-      console.error("Error creating wallet:", error);
+  // Refetch wallets when component mounts to ensure fresh data
+  useEffect(() => {
+    refetchWallets();
+  }, [refetchWallets]);
 
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("Failed to create wallet");
-      }
-    }
-  };
+  // Handle UserWalletsResult error states
+  if (walletsResult && !walletsResult.success) {
+    return <WalletsErrorState error={walletsResult.message || "Failed to load wallets"} />;
+  }
+  
+  const {
+    // State
+    showCreateForm,
+    newWalletCurrency,
+    showAddFundsModal,
+    addFundsAmount,
+    showTransferModal,
+    transferTargetWalletId,
+    transferAmount,
+    deleteModal,
 
-  const handleDeleteWallet = (walletId: string) => {
-    const wallet = wallets.find((w) => w.id === walletId);
-    setDeleteModal({
-      isOpen: true,
-      walletId,
-      walletCurrency: wallet?.currency || "",
-    });
-  };
+    // Loading states
+    createLoading,
+    deleteLoading,
+    increaseLoading,
+    transferLoading,
 
-  const confirmDeleteWallet = async () => {
-    try {
-      const result = await deleteUserWallet({
-        variables: { walletId: deleteModal.walletId },
-        errorPolicy: "all",
-      });
+    // Handlers
+    handleCreateWallet,
+    handleDeleteWallet,
+    confirmDeleteWallet,
+    handleAddFunds,
+    handleAddFundsSubmit,
+    handleTransfer,
+    handleTransferSubmit,
 
-      // Check if there are GraphQL errors in the result
-      if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
-        } else {
-          toast.error("Failed to delete wallet");
-        }
-        // Close modal on error
-        setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
-      } else {
-        setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
-        toast.success("Wallet deleted successfully!");
-      }
-    } catch (error: any) {
-      console.error("Error deleting wallet:", error);
-
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("Failed to delete wallet");
-      }
-      // Close modal on error
-      setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" });
-    }
-  };
-
-  const handleAddFunds = (walletId: string) => {
-    setShowAddFundsModal(walletId);
-    setAddFundsAmount("");
-  };
-
-  const handleAddFundsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!showAddFundsModal || !addFundsAmount) return;
-
-    try {
-      const amountMinor = toMinorUnits(addFundsAmount); // Convert to minor units as string
-      const result = await increaseUserWalletBalance({
-        variables: {
-          walletId: showAddFundsModal,
-          input: {
-            amountMinor,
-          },
-        },
-        errorPolicy: "all",
-      });
-
-      // Check if there are GraphQL errors in the result
-      if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
-        } else {
-          toast.error("Failed to add funds");
-        }
-      } else {
-        setShowAddFundsModal(null);
-        setAddFundsAmount("");
-        toast.success("Funds added successfully!");
-      }
-    } catch (error: any) {
-      console.error("Error adding funds:", error);
-
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("Failed to add funds");
-      }
-    }
-  };
-
-  const handleTransfer = (walletId: string) => {
-    setShowTransferModal(walletId);
-    setTransferTargetWalletId("");
-    setTransferAmount("");
-  };
-
-  const handleTransferSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!showTransferModal || !transferTargetWalletId || !transferAmount) return;
-
-    try {
-      const amountMinor = toMinorUnits(transferAmount); // Convert to minor units as string
-      const wallet = wallets.find(w => w.id === showTransferModal);
-      
-      const result = await transferFromUserWallet({
-        variables: {
-          input: {
-            toWalletId: transferTargetWalletId,
-            currency: wallet?.currency || "",
-            amountMinor,
-          },
-        },
-        errorPolicy: "all",
-      });
-      
-      // Check if there are GraphQL errors in the result
-      if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
-        } else {
-          toast.error("Failed to transfer funds");
-        }
-      } else {
-        setShowTransferModal(null);
-        setTransferTargetWalletId("");
-        setTransferAmount("");
-        toast.success("Funds transferred successfully!");
-      }
-    } catch (error: any) {
-      console.error("Error transferring funds:", error);
-      
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("Failed to transfer funds");
-      }
-    }
-  };
+    // Setters
+    setShowCreateForm,
+    setNewWalletCurrency,
+    setShowAddFundsModal,
+    setAddFundsAmount,
+    setShowTransferModal,
+    setTransferTargetWalletId,
+    setTransferAmount,
+    setDeleteModal,
+  } = useWalletOperations(wallets);
 
   if (walletsLoading) {
-    return (
-      <>
-        <Head>
-          <title>My Wallets</title>
-        </Head>
-        <div className="py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
+    return <WalletsLoadingState />;
   }
 
   if (walletsError) {
-    return (
-      <>
-        <Head>
-          <title>My Wallets</title>
-        </Head>
-        <div className="py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-red-600 mb-4">
-                Error Loading Wallets
-              </h2>
-              <p className="text-slate-600">{walletsError.message}</p>
-            </div>
-          </div>
-        </div>
-      </>
-    );
+    return <WalletsErrorState error={walletsError.message} />;
   }
-
-  const wallets = walletsData?.userWallets || [];
 
   return (
     <>
@@ -292,35 +88,6 @@ export default function MyWalletsPage() {
       <div className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <WalletPageHeader onCreateWallet={() => setShowCreateForm(true)} />
-
-          <CreateWalletModal
-            isOpen={showCreateForm}
-            currency={newWalletCurrency}
-            loading={createLoading}
-            onCurrencyChange={setNewWalletCurrency}
-            onSubmit={handleCreateWallet}
-            onClose={() => setShowCreateForm(false)}
-          />
-
-          <AddFundsModal
-            isOpen={!!showAddFundsModal}
-            amount={addFundsAmount}
-            loading={increaseLoading}
-            onAmountChange={setAddFundsAmount}
-            onSubmit={handleAddFundsSubmit}
-            onClose={() => setShowAddFundsModal(null)}
-          />
-
-          <TransferModal
-            isOpen={!!showTransferModal}
-            targetWalletId={transferTargetWalletId}
-            amount={transferAmount}
-            loading={transferLoading}
-            onTargetWalletIdChange={setTransferTargetWalletId}
-            onAmountChange={setTransferAmount}
-            onSubmit={handleTransferSubmit}
-            onClose={() => setShowTransferModal(null)}
-          />
 
           {wallets.length === 0 ? (
             <EmptyWalletState onCreateWallet={() => setShowCreateForm(true)} />
@@ -336,20 +103,33 @@ export default function MyWalletsPage() {
         </div>
       </div>
 
-
-
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
-        isOpen={deleteModal.isOpen}
-        title="Delete Wallet"
-        itemName={`${deleteModal.walletCurrency} Wallet`}
-        itemType="wallet"
-        warningMessage="All funds in this wallet will be lost permanently."
-        onConfirm={confirmDeleteWallet}
-        onCancel={() =>
+      <WalletsModals
+        showCreateForm={showCreateForm}
+        newWalletCurrency={newWalletCurrency}
+        createLoading={createLoading}
+        onCurrencyChange={setNewWalletCurrency}
+        onCreateSubmit={handleCreateWallet}
+        onCreateClose={() => setShowCreateForm(false)}
+        showAddFundsModal={showAddFundsModal}
+        addFundsAmount={addFundsAmount}
+        increaseLoading={increaseLoading}
+        onAddFundsAmountChange={setAddFundsAmount}
+        onAddFundsSubmit={handleAddFundsSubmit}
+        onAddFundsClose={() => setShowAddFundsModal(null)}
+        showTransferModal={showTransferModal}
+        transferTargetWalletId={transferTargetWalletId}
+        transferAmount={transferAmount}
+        transferLoading={transferLoading}
+        onTransferTargetWalletIdChange={setTransferTargetWalletId}
+        onTransferAmountChange={setTransferAmount}
+        onTransferSubmit={handleTransferSubmit}
+        onTransferClose={() => setShowTransferModal(null)}
+        deleteModal={deleteModal}
+        deleteLoading={deleteLoading}
+        onDeleteConfirm={confirmDeleteWallet}
+        onDeleteCancel={() =>
           setDeleteModal({ isOpen: false, walletId: "", walletCurrency: "" })
         }
-        loading={deleteLoading}
       />
     </>
   );

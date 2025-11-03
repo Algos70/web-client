@@ -43,7 +43,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
             {getLayout(<Component {...pageProps} />)}
           </AppLayout>
           <Toaster 
-            position="top-right"
+            position="top-left"
             toastOptions={{
               duration: 4000,
               style: {

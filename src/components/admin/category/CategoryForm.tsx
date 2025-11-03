@@ -7,7 +7,7 @@ import type {
 
 interface CategoryFormProps {
   category?: Category;
-  onSubmit: (input: any) => void;
+  onSubmit: (input: CreateCategoryInput | UpdateCategoryInput) => void;
   onCancel: () => void;
   loading: boolean;
   isCreate: boolean;

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ROUTES } from "../../lib/constants/routes";
 
 interface HeroHeaderProps {
   title?: string;

@@ -28,27 +28,32 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       // Check if there are GraphQL errors in the result
       if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
+        const errorMessage = result.error.message || "An error occurred while adding item to cart.";
+        toast.error(errorMessage, { 
+          id: `product-fail-${product.id}`,
+          className: 'product-error-toast'
+        });
+      } else if (result.data?.addItemToCart) {
+        const { success, message } = result.data.addItemToCart;
+        if (success) {
+          toast.success(message || "Product added to cart successfully!", { 
+            id: `product-success-${product.id}`,
+            className: 'product-success-toast'
+          });
         } else {
-          toast.error("An error occurred while adding item to cart.");
+          toast.error(message || "Failed to add product to cart", { 
+            id: `product-fail-${product.id}`,
+            className: 'product-error-toast'
+          });
         }
-      } else {
-        toast.success("Product added to cart successfully!");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error adding item to cart:", error);
-
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("An error occurred while adding item to cart.");
-      }
+      const errorMessage = error instanceof Error ? error.message : "An error occurred while adding item to cart.";
+      toast.error(errorMessage, { 
+        id: `product-fail-${product.id}`,
+        className: 'product-error-toast'
+      });
     }
   };
 
@@ -62,7 +67,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       <h1 className="text-xl font-bold text-gray-900 mb-2">{product.name}</h1>
 
-      <div className="text-xl font-bold text-gray-900 mb-3">
+      <div className="price text-xl font-bold text-gray-900 mb-3" id={product.currency}>
         {formatCurrency(product.priceMinor.toString(), product.currency)}
       </div>
 
@@ -70,6 +75,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* Add to Cart Button */}
       <button
+        id={`add-to-cart-${product.slug}`}
         className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-medium py-2 px-4 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-3 text-sm"
         disabled={product.stockQty === 0 || addingToCart}
         onClick={handleAddToCart}

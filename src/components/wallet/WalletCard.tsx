@@ -51,7 +51,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div id={`wallet-${wallet.currency}`} className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
       {/* Card Header with Gradient */}
       <div
         className={`bg-gradient-to-r ${getCurrencyColor(
@@ -157,6 +157,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
         <div className="flex space-x-2">
           {onAddFunds && (
             <button
+              id="add-funds-start"
               onClick={() => onAddFunds(wallet.id)}
               disabled={isLoading}
               className="flex-1 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 hover:cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"

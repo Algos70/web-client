@@ -26,8 +26,14 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const cart = cartData?.userCart;
-  const items = cart?.items || [];
-  const wallets = walletsData?.userWallets || [];
+  const items = cart?.success ? cart.cartItems : [];
+  const walletsResult = walletsData?.userWallets;
+  const wallets = walletsResult?.wallets || [];
+
+  // Handle UserWalletsResult error states
+  if (walletsResult && !walletsResult.success && !walletsLoading) {
+    return <ErrorState message={walletsResult.message || "Failed to load wallets"} />;
+  }
 
   // Get unique currencies from cart items
   const cartCurrencies = Array.from(
@@ -97,28 +103,27 @@ export default function PaymentPage() {
 
       // Check if there are GraphQL errors in the result
       if (result.error) {
-        const error = result.error as any;
-        if (error.errors && error.errors.length > 0) {
-          const errorMessage = error.errors[0].message;
-          toast.error(errorMessage);
-        } else if (error.networkError) {
-          toast.error("Network error occurred. Please try again.");
-        } else {
-          toast.error("An error occurred while creating the order.");
-        }
-      } else if (result.data?.createOrderFromCart) {
-        toast.success("Order placed successfully!");
+        const errorMessage = result.error.message || "An error occurred while creating the order.";
+        toast.error(errorMessage, {
+          className: 'order-error-toast'
+        });
+      } else if (result.data?.createOrderFromCart?.success) {
+        toast.success(result.data.createOrderFromCart.message || "Order placed successfully!", {
+          className: 'order-success-toast'
+        });
         // Redirect to order confirmation or orders page
         router.push('/my-orders');
+      } else if (result.data?.createOrderFromCart && !result.data.createOrderFromCart.success) {
+        toast.error(result.data.createOrderFromCart.message || "Failed to create order", {
+          className: 'order-error-toast'
+        });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating order:", error);
-      // Handle network errors or other unexpected errors
-      if (error.networkError) {
-        toast.error("Network error occurred. Please try again.");
-      } else {
-        toast.error("Failed to create order. Please try again.");
-      }
+      const errorMessage = error instanceof Error ? error.message : "Failed to create order. Please try again.";
+      toast.error(errorMessage, {
+        className: 'order-error-toast'
+      });
     } finally {
       setIsProcessing(false);
     }

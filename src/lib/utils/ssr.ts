@@ -4,7 +4,7 @@ import { DocumentNode } from "graphql";
 
 interface SSRQueryConfig {
   query: DocumentNode;
-  variables?: (context: GetServerSidePropsContext) => Record<string, any>;
+  variables?: (context: GetServerSidePropsContext) => Record<string, unknown>;
   propName?: string;
   required?: boolean;
 }
@@ -15,14 +15,14 @@ interface SSRConfig {
   skipAuthErrors?: boolean; // Skip auth errors and continue with empty data
 }
 
-export function createSSRHandler(config: SSRConfig): GetServerSideProps {
+export function createSSRHandler(config: SSRConfig): GetServerSideProps<Record<string, unknown>> {
   return async (context) => {
     // Use unified Apollo Client with cookie forwarding
     const headers = {
       cookie: context.req.headers.cookie || "",
     };
     const apolloClient = initializeApollo(null, headers);
-    const props: Record<string, any> = {};
+    const props: Record<string, unknown> = {};
 
     try {
       // Execute all queries in parallel
@@ -38,23 +38,19 @@ export function createSSRHandler(config: SSRConfig): GetServerSideProps {
           });
 
           // Extract the first property from data if no specific propName is provided
-          const dataKey = Object.keys(data as any)[0];
+          const dataKey = Object.keys(data as Record<string, unknown>)[0];
           const propName = queryConfig.propName || `${dataKey}Data`;
 
-          return { propName, data: (data as any)[dataKey], error: null };
-        } catch (error: any) {
+          return { propName, data: (data as Record<string, unknown>)[dataKey], error: null };
+        } catch (error: unknown) {
           // Handle authentication errors
+          const errorMessage = error instanceof Error ? error.message : "";
           const isAuthError =
-            error.message?.includes("Authentication") ||
-            error.message?.includes("Unauthorized") ||
-            error.graphQLErrors?.some(
-              (e: any) =>
-                e.message?.includes("Authentication") ||
-                e.message?.includes("Unauthorized")
-            );
+            errorMessage.includes("Authentication") ||
+            errorMessage.includes("Unauthorized");
 
           if (isAuthError && config.skipAuthErrors) {
-            console.warn(`SSR: Skipping auth error for query`, error.message);
+            console.warn(`SSR: Skipping auth error for query`, errorMessage);
             const dataKey = "unknown";
             const propName = queryConfig.propName || `${dataKey}Data`;
             return { propName, data: null, error };
@@ -84,7 +80,7 @@ export function createSSRHandler(config: SSRConfig): GetServerSideProps {
 
       return addApolloState(apolloClient, {
         props,
-      });
+      }) as { props: Record<string, unknown> };
     } catch (error) {
       console.error("SSR Error:", error);
 
@@ -99,7 +95,7 @@ export function createSSRHandler(config: SSRConfig): GetServerSideProps {
       // Otherwise return empty props
       return addApolloState(apolloClient, {
         props,
-      });
+      }) as { props: Record<string, unknown> };
     }
   };
 }

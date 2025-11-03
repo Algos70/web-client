@@ -19,6 +19,7 @@ export default function PaymentActions({
 
   return (
     <button
+      id="order-button"
       onClick={onPlaceOrder}
       disabled={!selectedWalletId || isProcessing || orderLoading}
       className="w-full bg-green-600 text-white py-3 px-4 rounded-md font-medium hover:bg-green-700 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

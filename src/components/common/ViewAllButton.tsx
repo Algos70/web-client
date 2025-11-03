@@ -11,6 +11,7 @@ export default function ViewAllButton({ href, children }: ViewAllButtonProps) {
   return (
     <div className="text-center mt-12">
       <button
+        id="view-all-categories"
         onClick={() => router.push(href)}
         className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gray-800 hover:bg-gray-900 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
       >

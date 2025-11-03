@@ -15,7 +15,8 @@ export default function CategoryCard({ category, getCategoryColor }: CategoryCar
 
   return (
     <div
-      className="group cursor-pointer"
+      id={`category-${category.slug}`}
+      className="category-card group cursor-pointer"
       onClick={handleCategoryClick}
     >
       <div className="relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300">
