@@ -103,7 +103,9 @@ export default function CategoriesPage({ categoriesData: initialCategoriesData }
   const { page: pageParam, search } = router.query;
   const currentPage = parseInt(pageParam as string) || 1;
 
-  const { data, loading, error } = useCategories(currentPage, 10, search as string);
+  const { data, loading, error } = useCategories(currentPage, 10, { 
+    search: search as string 
+  });
 
   if (loading) {
     return (
