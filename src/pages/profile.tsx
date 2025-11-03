@@ -7,26 +7,6 @@ import UserDashboard from "../components/auth/UserDashboard";
 export default function Profile() {
   const { user } = useAuth();
 
-  const callBackend = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/protected`, {
-        credentials: "include",
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Success:", data);
-        alert(`API Response: ${JSON.stringify(data, null, 2)}`);
-      } else {
-        console.error("Request failed:", response.status);
-        alert(`Request failed with status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Full error:", error);
-      alert(`Error: ${error}`);
-    }
-  };
-
 
 
   return (
@@ -40,7 +20,6 @@ export default function Profile() {
           <div className="bg-white rounded-lg shadow-sm p-8">
             <UserDashboard 
               user={user} 
-              onCallBackend={callBackend} 
               onLogout={() => {}} // Logout handled by header
             />
           </div>
