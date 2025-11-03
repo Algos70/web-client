@@ -6,13 +6,11 @@ import {
 
 interface UserDashboardProps {
   user: User | null;
-  onCallBackend: () => void;
   onLogout?: () => void;
 }
 
 export default function UserDashboard({
   user,
-  onCallBackend,
 }: UserDashboardProps) {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -127,35 +125,7 @@ export default function UserDashboard({
         </div>
       </div>
 
-      <div className="card p-5">
-        <h3 className="text-base font-semibold text-slate-800 mb-2">
-          Developer Tools
-        </h3>
-        <p className="text-slate-600 text-sm mb-4">
-          Test API connectivity and authentication
-        </p>
-        <button
-          onClick={onCallBackend}
-          className="btn-success text-sm py-2 px-4"
-        >
-          <span className="flex items-center">
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-              />
-            </svg>
-            Test Protected API
-          </span>
-        </button>
-      </div>
+
     </div>
   );
 }
