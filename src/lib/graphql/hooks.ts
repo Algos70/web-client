@@ -11,12 +11,10 @@ import {
   GET_PRODUCTS,
   GET_PRODUCT,
   GET_PRODUCT_BY_SLUG,
-  GET_PRODUCTS_BY_CATEGORY,
   GET_FEATURED_PRODUCTS,
   SEARCH_PRODUCTS,
   GET_CATEGORIES,
   GET_CATEGORY,
-  GET_CATEGORY_BY_SLUG,
   GET_CATEGORY_PRODUCTS,
   GET_USER_CART,
   GET_USER_WALLETS,
@@ -167,16 +165,6 @@ export const useCategory = (id: string) => {
   });
 };
 
-export const useCategoryBySlug = (slug: string) => {
-  return useQuery<{ categoryBySlug: CategoryResponse }>(
-    GET_CATEGORY_BY_SLUG,
-    {
-      variables: { slug },
-      skip: !slug,
-    }
-  );
-};
-
 export const useCategoryProducts = (
   slug: string,
   page: number = 1,
@@ -309,16 +297,6 @@ export const useProductBySlug = (slug: string) => {
     variables: { slug },
     skip: !slug,
   });
-};
-
-export const useProductsByCategory = (categoryId: string) => {
-  return useQuery<{ productsByCategory: ProductsResult }>(
-    GET_PRODUCTS_BY_CATEGORY,
-    {
-      variables: { categoryId },
-      skip: !categoryId,
-    }
-  );
 };
 
 export const useFeaturedProducts = (

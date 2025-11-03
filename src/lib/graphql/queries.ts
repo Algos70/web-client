@@ -260,30 +260,6 @@ export const GET_PRODUCT_BY_SLUG = gql`
   }
 `;
 
-export const GET_PRODUCTS_BY_CATEGORY = gql`
-  query GetProductsByCategory($categoryId: ID!) {
-    productsByCategory(categoryId: $categoryId) {
-      success
-      message
-      products {
-        id
-        name
-        slug
-        priceMinor
-        currency
-        stockQty
-        createdAt
-        updatedAt
-        category {
-          id
-          name
-          slug
-        }
-      }
-    }
-  }
-`;
-
 
 
 export const GET_FEATURED_PRODUCTS = gql`
@@ -384,26 +360,6 @@ export const GET_CATEGORIES = gql`
 export const GET_CATEGORY = gql`
   query GetCategory($id: ID!) {
     category(id: $id) {
-      success
-      message
-      category {
-        id
-        slug
-        name
-        createdAt
-        updatedAt
-        products {
-          id
-          name
-        }
-      }
-    }
-  }
-`;
-
-export const GET_CATEGORY_BY_SLUG = gql`
-  query GetCategoryBySlug($slug: String!) {
-    categoryBySlug(slug: $slug) {
       success
       message
       category {
