@@ -1,12 +1,10 @@
-import { ReactElement, useState, useEffect } from 'react';
+import { ReactElement} from 'react';
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useAuth } from "../lib/contexts/AuthContext";
 import AuthenticatedLayout from '../components/layouts/AuthenticatedLayout';
 import UserDashboard from "../components/auth/UserDashboard";
 
 export default function Profile() {
-  const router = useRouter();
   const { user } = useAuth();
 
   const callBackend = async () => {
