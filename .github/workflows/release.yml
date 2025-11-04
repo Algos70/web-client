@@ -36,8 +36,7 @@ jobs:
         run: npm run build
 
       - name: Build Docker image locally
-        run: docker build -t ghcr.io/${{ env.OWNER_LC }}/web-client:latest .
-
+        run: docker build -t ${{ env.OWNER_LC }}/web-client:latest .
       - name: Login to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ env.OWNER_LC }} --password-stdin
 
